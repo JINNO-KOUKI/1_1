@@ -238,7 +238,7 @@ namespace ex01_DataStructure
 
 			MyList::ConstIterator cit = list.ConstEnd();
 			ASSERT_TRUE(list.Insert(cit, ResultData(1, "Back"))) << "末尾への要素の挿入に失敗";
-		
+
 			cit = list.ConstBegin();
 			++cit;
 			ASSERT_TRUE(list.Insert(cit, ResultData(1, "Center"))) << "中央への要素の挿入に失敗";

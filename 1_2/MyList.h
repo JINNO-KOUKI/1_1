@@ -10,9 +10,7 @@ class MyList
 {
 public:
 	/// @brief デフォルトコンストラクタ
-	MyList() : _EOL(Node()), _Dummy(&_EOL, this), _ConstDummy(&_EOL, this), _Size(0)
-			 , _Begin(Iterator(&_EOL, this)), _End(Iterator(&_EOL, this))
-			 , _ConstBegin(ConstIterator(&_EOL, this)), _ConstEnd(ConstIterator(&_EOL, this)){}
+	MyList() : _EOL(Node()), _Dummy(&_EOL, this), _ConstDummy(&_EOL, this), _Size(0) {}
 
 	/// @brief デストラクタ
 	~MyList() { Clear(); }
@@ -59,201 +57,22 @@ private:
 	};
 
 public:
-	/// @brief		ConstIteratorの前置宣言
-	/// @details	Iteratorクラス内で、ConstIteratorが渡された際の挙動を\n
-	///				定義するために使用しています。
-	class ConstIterator;
-
-	/// @brief MyListコンテナのイテレータ
-	class Iterator
+	/// @brief MyListコンテナのコンストイテレータ
+	class ConstIterator
 	{
 		/// @brief	MyListへのフレンド属性定義
-		/// @detail	メンバ変数へのアクセスは、サブクラスとMyListクラスからのみ可能としています
-		friend MyList;
+		friend MyList;	// メンバ変数へのアクセスは、サブクラスとMyListクラスからのみ可能としています
 
 	public:	// コンストラクタ群
 
 		/// @brief	デフォルトコンストラクタ
 		/// @detail	初期状態では、指す先も関連付けされたリストも存在しない、不正イテレータになります。
-		Iterator() : _Target(nullptr), _List(nullptr) {}
-
-		/// @brief			引数付きコンストラクタ
-		/// @param target	イテレータが指し示すノード
-		/// @param list		関連付けされたリストのポインタ
-		Iterator(Node* target, MyList* list) : _Target(target), _List(list) {}
-
-		/// @brief	ConstIteratorからのコピーコンストラクタ
-		/// @detail	ConstIteratorを使用してコピーを作成できないようにします
-		Iterator(const ConstIterator&) = delete;
-	
-		/// @brief コピーコンストラクタ
-		/// @param other コピー元
-		Iterator(const Iterator& other)
-		{
-			_Target = other._Target;
-			_List = other._List;
-		}
-
-		/// @brief			ムーブコンストラクタ
-		/// @param other	移動元
-		Iterator(Iterator&& other) noexcept
-			: _Target(other._Target), _List(other._List)
-		{
-			other._Target = nullptr;
-			other._List = nullptr;
-		}
-
-	public:	// 演算子オーバーロード群
-
-		/// @brief	ConstIterator用コピー代入演算子
-		/// @detail	ConstIteratorからの呼び出しを禁止しています
-		Iterator& operator=(const ConstIterator& other) = delete;
-
-		/// @brief			コピー代入演算子
-		/// @param other	コピー元
-		/// @return			コピーされた値
-		Iterator& operator=(const Iterator& other) noexcept
-		{
-			_Target = other._Target;
-			_List = other._List;
-			return *this;
-		}
-
-		/// @brief			ムーブ代入演算子
-		/// @param other	移動元
-		/// @return			ムーブされた値
-		Iterator& operator=(Iterator&& other) noexcept
-		{
-			_Target = other._Target;
-			_List = other._List;
-
-			other._Target = nullptr;
-			other._List = nullptr;
-
-			return *this;
-		}
-
-		/// @brief		イテレータの指す要素を取得する
-		/// @return		非const要素
-		/// @details	※以下の条件に当てはまる場合、Assertが発生します\n
-		///				・関連付けされたリストがない\n
-		///				・ダミーノードを指すイテレータである\n
-		///				・指す要素がない	
-		ResultData& operator*() const noexcept
-		{
-			assert(_List != nullptr);
-			assert(_Target != &_List->_EOL);
-			assert(_Target != nullptr);
-
-			return _Target->_ResultData;
-		}
-
-		/// @brief		前置インクリメント
-		/// @return		インクリメントされた後の値
-		/// @details	リストの末尾に向かって、このイテレータが指す先を一つ進めます\n
-		///				※以下の条件に当てはまる場合、Assertが発生します\n
-		///				・関連付けされたリストがない\n
-		///				・参照先リストが空\n
-		///				・ダミーノードを指すイテレータである
-		Iterator& operator++()
-		{
-			assert(_List != nullptr);
-			assert(_List->Size() != 0);
-			assert(_Target != &_List->_EOL);
-
-			_Target = _Target->_Next;
-			return *this;
-		}
-
-		/// @brief		前置デクリメント
-		/// @return		デクリメントされた後の値
-		/// @details	リストの先頭に向かって、このイテレータが指す先を一つ進めます\n
-		///				※以下の条件に当てはまる場合、Assertが発生します\n
-		///				・関連付けされたリストがない\n
-		///				・参照先リストが空\n
-		///				・先頭要素を指すイテレータである
-		Iterator& operator--()
-		{
-			assert(_List != nullptr);
-			assert(_List->Size() != 0);
-			assert(_Target != _List->_EOL._Next);
-
-			_Target = _Target->_Prev;
-			return *this;
-		}
-		
-		/// @brief		後置インクリメント
-		/// @return		インクリメントされる前の値
-		/// @details	リストの末尾に向かって、このイテレータが指す先を一つ進めます\n
-		///				※以下の条件に当てはまる場合、Assertが発生します\n
-		///				・関連付けされたリストがない\n
-		///				・参照先リストが空\n
-		///				・ダミーノードを指すイテレータである
-		Iterator operator++(int)
-		{
-			assert(_List != nullptr);
-			assert(_List->Size() != 0);
-			assert(_Target != &_List->_EOL);
-
-			Iterator tOld = *this;
-			++(*this);
-			return tOld;
-		}
-
-		/// @brief		後置デクリメント
-		/// @return		デクリメントされる前の値
-		/// @details	リストの先頭に向かって、このイテレータが指す先を一つ進めます\n
-		///				※以下の条件に当てはまる場合、Assertが発生します\n
-		///				・関連付けされたリストがない\n
-		///				・参照先リストが空\n
-		///				・先頭要素を指すイテレータである
-		Iterator operator--(int)
-		{
-			assert(_List != nullptr);
-			assert(_List->Size() != 0);
-			assert(_Target != _List->_EOL._Next);
-
-			Iterator tOld = *this;
-			--(*this);
-			return tOld;
-		}
-
-		/// @brief			等価比較演算子
-		/// @param other	右辺要素
-		/// @return			比較結果
-		/// @detail			イテレータの指し示すノードと関連付けされたリストがそれぞれ同一か判定します
-		bool operator==(const Iterator& other) const noexcept
-		{
-			return (_Target == other._Target) && (_List == other._List);
-		}
-
-		/// @brief			非等価比較演算子
-		/// @param other	右辺要素
-		/// @return			比較結果
-		/// @detail			イテレータの指し示すノードと関連付けされたリストがどちらか一つでも異なるか判定します
-		bool operator!=(const Iterator& other) const noexcept
-		{
-			return !(_Target == other._Target) && (_List == other._List);
-		}
-
-	protected:
-		/// @brief イテレータの指しているノード
-		Node* _Target;
-		/// @brief 自身と関連付けられているリストのポインタ
-		MyList* _List;
-	};
-
-	class ConstIterator : public Iterator
-	{
-	public:	// コンストラクタ群
-
-		/// @brief デフォルトコンストラクタ
-		ConstIterator() : Iterator() {}
+		ConstIterator() : _Target(nullptr), _List(nullptr) {}
 
 		/// @brief			引数付きコンストラクタ
 		/// @param target	イテレータが指し示すノード
 		/// @param list		関連付けられるリストのポインタ
-		ConstIterator(Node* target, MyList* list) : Iterator(target, list) {}
+		ConstIterator(Node* target, const MyList* list) : _Target(target), _List(list) {}
 
 		/// @brief			コピーコンストラクタ
 		/// @param other	コピー元
@@ -395,11 +214,56 @@ public:
 		/// @param other	右辺要素
 		/// @return			比較結果
 		/// @detail			イテレータの指し示すノードと関連付けされたリストのいずれか一つ以上が異なるか判定します
-		bool operator!=(const Iterator& other) const noexcept
+		bool operator!=(const ConstIterator& other) const noexcept
 		{
-			return !(_Target == other._Target) && (_List == other._List);
+			return !(*this == other);
 		}
 
+	protected:
+		/// @brief イテレータの指しているノード
+		Node* _Target;
+		/// @brief 自身と関連付けられているリストのポインタ
+		const MyList* _List;
+	};
+
+	/// @brief MyListコンテナのイテレータ
+	class Iterator : public ConstIterator
+	{
+	public:	// コンストラクタ群
+
+		/// @brief	デフォルトコンストラクタ
+		/// @detail	初期状態では、指す先も関連付けされたリストも存在しない、不正イテレータになります。
+		Iterator() : ConstIterator() {}
+
+		/// @brief			引数付きコンストラクタ
+		/// @param target	イテレータが指し示すノード
+		/// @param list		関連付けされたリストのポインタ
+		Iterator(Node* target, MyList* list) : ConstIterator(target, list) {}
+
+		/// @brief	ConstIteratorからのコピーコンストラクタ
+		/// @detail	ConstIteratorを使用してコピーを作成できないようにします
+		Iterator(const ConstIterator&) = delete;
+	
+	public:	// 演算子オーバーロード群
+
+		/// @brief	ConstIterator用コピー代入演算子
+		/// @detail	ConstIteratorからの呼び出しを禁止しています
+		Iterator& operator=(const ConstIterator& other) = delete;
+
+		/// @brief		イテレータの指す要素を非const要素として取得する
+		/// @return		非const要素
+		/// @details	※以下の条件に当てはまる場合、Assertが発生します\n
+		///				・関連付けされたリストがない\n
+		///				・ダミーノードを指すイテレータである\n
+		///				・指す要素がない	
+		ResultData& operator*() const noexcept
+		{
+			assert(_List != nullptr);
+			assert(_Target != &_List->_EOL);
+			assert(_Target != nullptr);
+
+			return _Target->_ResultData;
+		}
 	};
 
 	/// @brief リスト内のデータ数を取得します
@@ -415,7 +279,7 @@ public:
 	///						・関連付けされたリストが無い\n
 	///						・イテレータの指す要素が無い\n
 	///						・新規メモリの確保に失敗
-	inline bool Insert(const Iterator& inIterator, const ResultData& inResultData)
+	inline bool Insert(const ConstIterator& inIterator, const ResultData& inResultData)
 	{
 		// 自身と関連の無いイテレータの場合は、何もせずに終了
 		if (inIterator._List != this) { return false; }
@@ -442,14 +306,6 @@ public:
 		tPrev->_Next = tNewNode;
 		inIterator._Target->_Prev = tNewNode;
 
-		
-		// 新規ノードが先頭要素だったら
-		if (tNewNode == _EOL._Next) 
-		{ 
-			// -- イテレータの更新
-			_Begin = Iterator(_EOL._Next, this);
-			_ConstBegin = ConstIterator(_EOL._Next, this);
-		}
 		// 要素数を更新
 		++_Size;
 
@@ -465,7 +321,7 @@ public:
 	///						・イテレータの指す要素が無い\n
 	///						・イテレータがダミーノードを指している\n
 	///						・関連付けされたリストが無い
-	inline bool Remove(const Iterator& inIterator)
+	inline bool Remove(const ConstIterator& inIterator)
 	{
 		// 自身と関連の無いイテレータの場合は、何もせずに終了
 		if (inIterator._List != this) { return false; }
@@ -485,10 +341,7 @@ public:
 
 			// 要素数を更新
 			--_Size;
-			// -- イテレータを更新
-			_Begin		= Iterator(_EOL._Next, this);
-			_ConstBegin = ConstIterator(_EOL._Next, this);
-
+			
 			return true;
 		}
 		else
@@ -535,8 +388,6 @@ public:
 		// -- メンバ変数の初期化
 		_EOL._Prev = &_EOL;
 		_EOL._Next = &_EOL;
-		_Begin = Iterator(&_EOL, this);
-		_ConstBegin = ConstIterator(&_EOL, this);
 
 		return true;
 	}
@@ -544,22 +395,34 @@ public:
 	/// @brief	先頭のイテレータを取得する
 	/// @return	先頭のイテレータ
 	/// @detail	要素が一つも存在しない場合は、ダミーノードを指すイテレータを返却します。
-	inline Iterator Begin() noexcept { return _Begin; }
+	inline Iterator Begin() noexcept { return Iterator(_EOL._Next, this); }
+
+	/// @brief		先頭のイテレータを取得する
+	/// @return		先頭のイテレータ
+	/// @details	範囲for文に対応させるための別名関数です。Begin()と同一の動作をします。
+	///				要素が一つも存在しない場合は、ダミーノードを指すイテレータを返却します。
+	inline Iterator begin() noexcept { return Begin(); }
 
 	/// @brief	末尾のイテレータを取得する
 	/// @return 末尾のイテレータ
 	/// @detail	いかなる場合でも、常にダミーノードを指すイテレータを返却します。
-	inline Iterator End() noexcept { return _End; }
+	inline Iterator End() noexcept { return Iterator(&_EOL, this); }
+
+	/// @brief		末尾のイテレータを取得する
+	/// @return		末尾のイテレータ
+	/// @details	範囲for文に対応させるための別名関数です。End()と同一の動作をします。
+	///				いかなる場合でも、常にダミーノードを指すイテレータを返却します。
+	inline Iterator end() noexcept { return End(); }
 
 	/// @brief	先頭のコンストイテレータを取得する
 	/// @return 先頭のコンストイテレータ
 	/// @detail	要素が一つも存在しない場合は、ダミーノードを指すコンストイテレータを返却します。
-	inline ConstIterator ConstBegin() const noexcept { return _ConstBegin; }
+	inline ConstIterator ConstBegin() const noexcept { return ConstIterator(_EOL._Next, this); }
 
 	/// @brief	末尾のコンストイテレータを取得する
 	/// @return 末尾のコンストイテレータ
 	/// @detail	いかなる場合でも、常にダミーノードを指すコンストイテレータを返却します。
-	inline ConstIterator ConstEnd() const noexcept { return _ConstEnd; }
+	inline ConstIterator ConstEnd() const noexcept { return ConstIterator(&_EOL, this); }
 
 	/// @brief		リストの先頭要素を取得する
 	/// @return		リストの先頭要素
@@ -599,19 +462,10 @@ public:
 
 private:
 	/// @brief リストの終端を表すノード
-	Node _EOL;
+	mutable Node _EOL;
 
 	/// @brief 格納されているデータ数
 	unsigned int _Size;
-
-	/// @brief イテレータの先頭
-	Iterator _Begin;
-	/// @brief イテレータの末尾
-	Iterator _End;
-	/// @brief コンストイテレータの先頭
-	ConstIterator _ConstBegin;
-	/// @brief コンストイテレータの末尾
-	ConstIterator _ConstEnd;
 
 	/// @brief		ダミーノードを指すイテレータ
 	/// @details	イテレータの指す要素がダミーノードだと想定される際の比較のために使用します。\n
