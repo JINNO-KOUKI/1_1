@@ -422,7 +422,7 @@ public:
 	/// @brief	末尾のコンストイテレータを取得する
 	/// @return 末尾のコンストイテレータ
 	/// @detail	いかなる場合でも、常にダミーノードを指すコンストイテレータを返却します。
-	inline ConstIterator ConstEnd() const noexcept { return ConstIterator(&_EOL, this); }
+	inline ConstIterator ConstEnd() const noexcept { return ConstIterator(const_cast<Node*>(&_EOL), this); }
 
 	/// @brief		リストの先頭要素を取得する
 	/// @return		リストの先頭要素
@@ -458,11 +458,11 @@ public:
 	///				ConstEnd()で返されるコンストイテレータと同一です。\n
 	///				この関数由来のもの以外で、ダミーノードを指すコンストイテレータであることが想定される際に\n
 	///				同一のコンストイテレータか確認するために使用します。
-	inline const ConstIterator& ConstDummy() const noexcept { return _ConstDummy; }
+	inline const ConstIterator& ConstDummy() const noexcept { return static_cast<ConstIterator>(_Dummy); }
 
 private:
 	/// @brief リストの終端を表すノード
-	mutable Node _EOL;
+	Node _EOL;
 
 	/// @brief 格納されているデータ数
 	unsigned int _Size;
@@ -471,9 +471,4 @@ private:
 	/// @details	イテレータの指す要素がダミーノードだと想定される際の比較のために使用します。\n
 	///				初期状態から変更されることはありません。
 	const Iterator _Dummy;
-
-	/// @brief		ダミーノードを指すコンストイテレータ
-	/// @details	コンストイテレータの指す要素がダミーノードだと想定される際の比較のために使用します。\n
-	///				初期状態から変更されることはありません。
-	const ConstIterator _ConstDummy;
 };
