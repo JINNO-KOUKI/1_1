@@ -1,0 +1,203 @@
+#pragma once
+
+#include <cassert>
+#include "ResultData.h"
+
+
+
+/// @brief リスト内のデータ数を取得します
+/// @return リスト内のデータ数
+inline unsigned int LinkedList::Size() const noexcept { return _Size; }
+
+/// @brief				新規要素を挿入する
+/// @param inIterator	挿入する場所を示すイテレータ
+/// @param inResultData 挿入する成績データ
+/// @return				データの挿入に成功した場合はTRUE、失敗した場合はFALSE
+/// @details			挿入先はイテレータが示す要素の直前です。\n
+///						※以下の条件に当てはまる場合、挿入せずにFALSEで終了します。\n
+///						・関連付けされたリストが無い\n
+///						・イテレータの指す要素が無い\n
+///						・新規メモリの確保に失敗
+inline bool LinkedList::Insert(const Iterator& inIterator, const ResultData& inResultData)
+{
+	// 自身と関連の無いイテレータの場合は、何もせずに終了
+	if (inIterator._List != this) { return false; }
+	// イテレータが無効値を指す場合も、終了
+	if (inIterator._Target == nullptr) { return false; }
+
+	// 新規ノードを作成
+	Node* tNewNode = new (std::nothrow) Node();
+	if (tNewNode == nullptr)
+	{	// メモリ確保に失敗
+
+		return false;
+	}
+
+	// 挿入箇所の直前要素を取得
+	Node* tPrev = inIterator._Target->_Prev;
+
+	// 成績データを設定
+	tNewNode->_ResultData = inResultData;
+
+	// -- イテレータの指す要素の手前に、新規ノードを配置
+	tNewNode->_Prev = tPrev;
+	tNewNode->_Next = inIterator._Target;
+	tPrev->_Next = tNewNode;
+	inIterator._Target->_Prev = tNewNode;
+
+
+	// 新規ノードが先頭要素だったら
+	if (tNewNode == _EOL._Next)
+	{
+		// -- イテレータの更新
+		_Begin = Iterator(_EOL._Next, this);
+		_ConstBegin = ConstIterator(_EOL._Next, this);
+	}
+	// 要素数を更新
+	++_Size;
+
+	return true;
+}
+
+/// @brief				要素を削除する
+/// @param inIterator	削除したい要素を指すイテレータ
+/// @return				削除に成功したらTRUE、失敗したらFALSE
+/// @details			イテレータが指し示す要素を削除して、前後の要素をつなげます。\n
+///						削除後、イテレータの指す要素は無効になります。\n
+///						※以下の条件に当てはまる場合、何もせずにFALSEで終了します。\n
+///						・イテレータの指す要素が無い\n
+///						・イテレータがダミーノードを指している\n
+///						・関連付けされたリストが無い
+inline bool LinkedList::Remove(const Iterator& inIterator)
+{
+	// 自身と関連の無いイテレータの場合は、何もせずに終了
+	if (inIterator._List != this) { return false; }
+
+	if (inIterator._Target != nullptr && inIterator._Target != &_EOL)
+	{	// イテレータの指す要素が有効値(nullでもなく、ダミーでもない)だった場合
+
+		Node* tPrev = inIterator._Target->_Prev;
+		Node* tNext = inIterator._Target->_Next;
+
+		// 削除要素の前後をつなげる
+		tPrev->_Next = tNext;
+		tNext->_Prev = tPrev;
+
+		// 削除要素のdelete
+		delete inIterator._Target;
+
+		// 要素数を更新
+		--_Size;
+		// -- イテレータを更新
+		_Begin = Iterator(_EOL._Next, this);
+		_ConstBegin = ConstIterator(_EOL._Next, this);
+
+		return true;
+	}
+	else
+	{	// イテレータが有効値でない
+
+		return false;
+	}
+}
+
+/// @brief		リストに格納されているすべての要素を削除する
+/// @return		削除に成功したらTRUE、失敗したらFALSE
+///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
+///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
+///				Assertが発生します。
+inline bool LinkedList::Clear()
+{
+	// 要素数0だったら終了
+	if (!_Size) { return true; }
+
+	// 最後尾のノードを取得
+	Node* tNode = _EOL._Prev;
+
+	// -- ダミーノードを指し示すまで繰り返し
+	while (true)
+	{
+		// 一つ前の要素に移動
+		tNode = tNode->_Prev;
+
+		// 次の要素を削除
+		delete tNode->_Next;
+
+		// サイズを更新
+		--_Size;
+
+		// サイズが負の値になった場合、Assertを発生させる
+		assert(_Size >= 0);
+
+		// ダミーノードを指し示したら終了
+		if (tNode == &_EOL) { break; }
+	}
+	// 想定通り全要素の削除が完了していない場合、Assertを発生させる
+	assert(_Size == 0);
+
+	// -- メンバ変数の初期化
+	_EOL._Prev = &_EOL;
+	_EOL._Next = &_EOL;
+	_Begin = Iterator(&_EOL, this);
+	_ConstBegin = ConstIterator(&_EOL, this);
+
+	return true;
+}
+
+/// @brief	先頭のイテレータを取得する
+/// @return	先頭のイテレータ
+/// @detail	要素が一つも存在しない場合は、ダミーノードを指すイテレータを返却します。
+inline LinkedList::Iterator LinkedList::Begin() noexcept { return _Begin; }
+
+/// @brief	末尾のイテレータを取得する
+/// @return 末尾のイテレータ
+/// @detail	いかなる場合でも、常にダミーノードを指すイテレータを返却します。
+inline LinkedList::Iterator LinkedList::End() noexcept { return _End; }
+
+/// @brief	先頭のコンストイテレータを取得する
+/// @return 先頭のコンストイテレータ
+/// @detail	要素が一つも存在しない場合は、ダミーノードを指すコンストイテレータを返却します。
+inline LinkedList::ConstIterator LinkedList::ConstBegin() const noexcept { return _ConstBegin; }
+
+/// @brief	末尾のコンストイテレータを取得する
+/// @return 末尾のコンストイテレータ
+/// @detail	いかなる場合でも、常にダミーノードを指すコンストイテレータを返却します。
+inline LinkedList::ConstIterator LinkedList::ConstEnd() const noexcept { return _ConstEnd; }
+
+/// @brief		リストの先頭要素を取得する
+/// @return		リストの先頭要素
+/// @details	要素が一つも格納されていない場合は、Assertが発生します。\n
+///				渡される値はコピーです。
+inline ResultData LinkedList::Front() const noexcept
+{
+	assert(_EOL._Next != nullptr);
+	return _EOL._Next->_ResultData;
+}
+
+/// @brief		リストの末尾要素を取得する
+/// @return		リストの末尾要素
+/// @details	要素が一つも格納されていない場合は、Assertが発生します。\n
+///				渡される値はコピーです。
+inline ResultData LinkedList::Back() const noexcept
+{
+	assert(_EOL._Next != nullptr);
+	return _EOL._Prev->_ResultData;
+}
+
+/// @brief		ダミーノードを指すイテレータを取得する
+/// @return		ダミーノードを指すイテレータ
+/// @details	ダミーノードを指すイテレータを返却します。\n
+///				End()で返されるイテレータと同一です。\n
+///				この関数由来のもの以外で、ダミーノードを指すイテレータであることが想定される際に\n
+///				同一のイテレータか確認するために使用します。
+inline const LinkedList::Iterator& LinkedList::Dummy() noexcept { return _Dummy; }
+
+/// @brief		ダミーノードを指すコンストイテレータを取得する
+/// @return		ダミーノードを指すコンストイテレータ
+/// @details	ダミーノードを指すコンストイテレータを返却します。\n
+///				ConstEnd()で返されるコンストイテレータと同一です。\n
+///				この関数由来のもの以外で、ダミーノードを指すコンストイテレータであることが想定される際に\n
+///				同一のコンストイテレータか確認するために使用します。
+inline const LinkedList::ConstIterator& LinkedList::ConstDummy() const noexcept { return _ConstDummy; }
+
+

@@ -3,6 +3,8 @@
 #include <cassert>
 #include "ResultData.h"
 
+#include 
+
 /// @brief		自作の双方向リストクラス
 /// @details	ダミーノードを起点に、要素が循環するように配置されています。\n
 ///				ダミーノードの_Nextは先頭要素、_Prevは末尾要素になります。
@@ -623,3 +625,5 @@ private:
 	///				初期状態から変更されることはありません。
 	const ConstIterator _ConstDummy;
 };
+
+#include "LinkedList.inl"
