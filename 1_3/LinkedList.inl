@@ -262,7 +262,7 @@ inline LinkedList<T>::Iterator::Iterator(Node* target, LinkedList<T>* list) : Co
 ///				・ダミーノードを指すイテレータである\n
 ///				・指す要素がない
 template <typename T>
-inline T& LinkedList<T>::Iterator::operator*() const noexcept
+inline T& LinkedList<T>::Iterator::operator*() noexcept
 {
 	assert(this->_List != nullptr);
 	assert(this->_Target != &this->_List->_EOL);

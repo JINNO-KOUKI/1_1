@@ -188,7 +188,7 @@ public:
 		///				・関連付けされたリストがない\n
 		///				・ダミーノードを指すイテレータである\n
 		///				・指す要素がない
-		T& operator*() const noexcept;
+		T& operator*() noexcept;
 	};
 
 	/// @brief リスト内のデータ数を取得します
