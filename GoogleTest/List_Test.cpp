@@ -19,7 +19,7 @@ namespace ex01_DataStructure
 						データ数が0であれば成功です。\n
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumWhenEmpty) {
-			LinkedList list;
+			MyList list;
 			EXPECT_EQ(0, list.Size()) << "想定されているサイズと異なる";
 		}
 
@@ -32,8 +32,8 @@ namespace ex01_DataStructure
 		 *//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumAfterPush)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.End();
+			MyList list;
+			MyList::Iterator it = list.End();
 			ASSERT_TRUE(list.Insert(it, ResultData(1, "Initial"))) << "要素の挿入に失敗";
 			EXPECT_EQ(1, list.Size()) << "想定されているサイズと異なる";
 		}
@@ -65,7 +65,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumPush)
 		{
-			LinkedList list;
+			MyList list;
 			
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			EXPECT_EQ(1, list.Size()) << "想定されているサイズと異なる";
@@ -80,8 +80,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumPushFailed)
 		{
-			LinkedList list;
-			LinkedList::Iterator it;
+			MyList list;
+			MyList::Iterator it;
 			ASSERT_FALSE(list.Insert(it, ResultData())) << "成功しないはずの挿入が成功してしまった";
 
 			EXPECT_EQ(0, list.Size()) << "想定している要素数と異なる";
@@ -96,8 +96,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumRemove)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.End();
+			MyList list;
+			MyList::Iterator it = list.End();
 			ASSERT_TRUE(list.Insert(it, ResultData())) << "要素の挿入に失敗";
 			it = list.Begin();
 			ASSERT_TRUE(list.Remove(it)) << "要素の削除に失敗";
@@ -113,8 +113,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumRemoveFailed)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.End();
+			MyList list;
+			MyList::Iterator it = list.End();
 			ASSERT_TRUE(list.Insert(it, ResultData())) << "要素の挿入に失敗";
 			it = list.End();
 			ASSERT_FALSE(list.Remove(it)) << "要素の削除に失敗";
@@ -130,8 +130,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(GetDataNumTest, TestGetDataNumEmptyRemove)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.Begin();
+			MyList list;
+			MyList::Iterator it = list.Begin();
 			ASSERT_FALSE(list.Remove(it)) << "要素の削除に失敗";
 			EXPECT_EQ(0, list.Size()) << "想定されているサイズと異なる";
 		}
@@ -147,7 +147,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestInsertToEmpty)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Begin"))) << "先頭への挿入に失敗";
 			EXPECT_EQ(ResultData(1, "Begin"), list.Front()) << "先頭へのデータ挿入後の先頭要素が、想定しているものと異なる";
@@ -167,12 +167,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestInsertToFront)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(2, "Front"))) << "先頭への要素の挿入に失敗";
 			EXPECT_EQ(ResultData(2, "Front"), list.Front()) << "先頭へのデータ挿入後の先頭要素が、想定しているものと異なる";
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			EXPECT_EQ(ResultData(1, "Initial"), (*it)) << "初期要素が、挿入要素の次に配置されていない";
 		}
@@ -186,7 +186,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestInsertToBack)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Back"))) << "末尾への要素の挿入に失敗";
@@ -204,16 +204,16 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestInsertToCenter)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Insert(it, ResultData(1, "Center"))) << "中央への要素の挿入に失敗";
 			
-			LinkedList::Iterator chkIt = list.Begin();
+			MyList::Iterator chkIt = list.Begin();
 			EXPECT_EQ(ResultData(1, "Initial"), *chkIt) << "初期要素<1>の配置が想定と異なる";
 			++chkIt;
 			EXPECT_EQ(ResultData(1, "Center"), *chkIt) << "中間に挿入した要素が想定した箇所に配置されていない";
@@ -232,11 +232,11 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestConstInsert)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList::ConstIterator cit = list.ConstEnd();
 			ASSERT_TRUE(list.Insert(cit, ResultData(1, "Back"))) << "末尾への要素の挿入に失敗";
 		
 			cit = list.ConstBegin();
@@ -246,7 +246,7 @@ namespace ex01_DataStructure
 			cit = list.ConstBegin();
 			ASSERT_TRUE(list.Insert(cit, ResultData(1, "Front"))) << "先頭への要素の挿入に失敗";
 
-			LinkedList::Iterator chkIt = list.Begin();
+			MyList::Iterator chkIt = list.Begin();
 			EXPECT_EQ(ResultData(1, "Front"), *chkIt) << "先頭に追加した要素の配置が想定と異なる";
 			++chkIt;
 			EXPECT_EQ(ResultData(1, "Initial"), *chkIt) << "初期要素<1>の配置が想定と異なる";
@@ -267,10 +267,10 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(InsertTest, TestFraudInsert)
 		{
-			LinkedList listA;
-			LinkedList listB;
+			MyList listA;
+			MyList listB;
 
-			LinkedList::Iterator nullIt;
+			MyList::Iterator nullIt;
 			EXPECT_EQ(false, listA.Insert(nullIt, ResultData(1, "Initial"))) << "無効なイテレータでの挿入に成功してしまった";
 			EXPECT_EQ(false, listA.Insert(listB.Begin(), ResultData(1, "Initial"))) << "別リストのイテレータでの挿入に成功してしまった";
 		}
@@ -286,7 +286,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestEmptyRemove)
 		{
-			LinkedList list;
+			MyList list;
 			
 			EXPECT_EQ(false, list.Remove(list.Begin())) << "先頭イテレータでの削除に成功してしまった";
 			EXPECT_EQ(false, list.Remove(list.End())) << "末尾イテレータでの削除に成功してしまった";
@@ -301,7 +301,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestRemoveToFront)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial")));
@@ -319,7 +319,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestRemoveToBack)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial")));
@@ -337,13 +337,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestRemoveToCenter)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial")));
 			
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Remove(it)) << "中間イテレータでの削除に失敗";
 
@@ -360,13 +360,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestConstRemoveToCenter)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial")));
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial")));
 			
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList::ConstIterator cit = list.ConstBegin();
 			++cit;
 			ASSERT_TRUE(list.Remove(cit)) << "中間コンストイテレータでの削除に失敗";
 
@@ -383,12 +383,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(RemoveTest, TestFraudRemove)
 		{
-			LinkedList listA;
-			LinkedList listB;
+			MyList listA;
+			MyList listB;
 
 			ASSERT_TRUE(listA.Insert(listA.End(), ResultData(1, "Initial")));
 			
-			LinkedList::Iterator nullIt;
+			MyList::Iterator nullIt;
 			EXPECT_EQ(false, listA.Remove(listB.Begin())) << "別リストのイテレータでの削除に成功してしまった";
 			EXPECT_EQ(false, listA.Remove(nullIt)) << "無効なイテレータでの削除に成功してしまった";
 		}
@@ -404,9 +404,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginIteratorTest, TestGetBeginIteratorWhenEmpty)
 		{
-			LinkedList list;
+			MyList list;
 			
-			LinkedList::Iterator dummy = list.End();
+			MyList::Iterator dummy = list.End();
 			EXPECT_EQ(dummy, list.Begin()) << "ダミーノード以外を指すイテレータを取得した";
 		}
 
@@ -419,7 +419,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginIteratorTest, TestGetBeginIteratorWhenOnce)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			
@@ -435,7 +435,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginIteratorTest, TestGetBeginIteratorWhenMulti)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
@@ -452,7 +452,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginIteratorTest, TestGetBeginIteratorWhenAfterInsert)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
@@ -460,7 +460,7 @@ namespace ex01_DataStructure
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(0, "Begin"))) << "先頭への挿入に失敗した";
 			EXPECT_EQ(ResultData(0, "Begin"), *(list.Begin())) << "先頭要素以外を指すイテレータを取得した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Insert(it, ResultData(0, "Center"))) << "中間への挿入に失敗した";
 			EXPECT_EQ(ResultData(0, "Begin"), *(list.Begin())) << "先頭要素以外を指すイテレータを取得した";
@@ -478,14 +478,14 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginIteratorTest, TestGetBeginIteratorWhenAfterRemove)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(4, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Remove(it)) << "中間要素の削除に失敗した";
 			EXPECT_EQ(ResultData(1, "Initial"), *(list.Begin())) << "先頭要素以外を指すイテレータを取得した";
@@ -510,9 +510,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginConstIteratorTest, TestGetBeginConstIteratorWhenEmpty)
 		{
-			LinkedList list;
+			MyList list;
 
-			LinkedList::ConstIterator dummy = list.ConstEnd();
+			MyList::ConstIterator dummy = list.ConstEnd();
 			EXPECT_EQ(dummy, list.ConstBegin()) << "ダミーノード以外を指すコンストイテレータを取得した";
 		}
 
@@ -525,7 +525,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginConstIteratorTest, TestGetBeginConstIteratorWhenOnce)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
@@ -541,7 +541,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginConstIteratorTest, TestGetBeginConstIteratorWhenMulti)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
@@ -558,7 +558,7 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginConstIteratorTest, TestGetBeginConstIteratorWhenAfterInsert)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
@@ -566,7 +566,7 @@ namespace ex01_DataStructure
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(0, "Begin"))) << "先頭への挿入に失敗した";
 			EXPECT_EQ(ResultData(0, "Begin"), *(list.ConstBegin())) << "先頭要素以外を指すイテレータを取得した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Insert(it, ResultData(0, "Center"))) << "中間への挿入に失敗した";
 			EXPECT_EQ(ResultData(0, "Begin"), *(list.ConstBegin())) << "先頭要素以外を指すイテレータを取得した";
@@ -584,14 +584,14 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(BeginConstIteratorTest, TestGetBeginConstIteratorWhenAfterRemove)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(4, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Remove(it)) << "中間要素の削除に失敗した";
 			EXPECT_EQ(ResultData(1, "Initial"), *(list.ConstBegin())) << "先頭要素以外を指すコンストイテレータを取得した";
@@ -616,9 +616,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndIteratorTest, TestGetEndIteratorWhenEmpty)
 		{
-			LinkedList list;
+			MyList list;
 
-			LinkedList::Iterator dummy = list.Dummy();
+			MyList::Iterator dummy = list.Dummy();
 			EXPECT_EQ(dummy, list.End()) << "ダミーノード以外を指すイテレータを取得した";
 		}
 
@@ -631,11 +631,11 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndIteratorTest, TestGetEndIteratorWhenOnce)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator dummy = list.Dummy();
+			MyList::Iterator dummy = list.Dummy();
 			EXPECT_EQ(dummy, list.End()) << "末尾(ダミーノード)以外を指すイテレータを取得した";
 		}
 
@@ -648,12 +648,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndIteratorTest, TestGetEndIteratorWhenMulti)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator dummy = list.Dummy();
+			MyList::Iterator dummy = list.Dummy();
 			EXPECT_EQ(dummy, list.End()) << "末尾(ダミーノード)以外を指すイテレータを取得した";
 		}
 
@@ -666,8 +666,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndIteratorTest, TestGetEndIteratorWhenAfterInsert)
 		{
-			LinkedList list;
-			LinkedList::Iterator dummy = list.Dummy();
+			MyList list;
+			MyList::Iterator dummy = list.Dummy();
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
@@ -675,7 +675,7 @@ namespace ex01_DataStructure
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(0, "Begin"))) << "先頭への挿入に失敗した";
 			EXPECT_EQ(dummy, list.End()) << "末尾(ダミーノード)以外を指すイテレータを取得した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Insert(it, ResultData(0, "Center"))) << "中間への挿入に失敗した";
 			EXPECT_EQ(dummy, list.End()) << "末尾(ダミーノード)以外を指すイテレータを取得した";
@@ -693,15 +693,15 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndIteratorTest, TestGetEndIteratorWhenAfterRemove)
 		{
-			LinkedList list;
-			LinkedList::Iterator dummy = list.Dummy();
+			MyList list;
+			MyList::Iterator dummy = list.Dummy();
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(4, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Remove(it)) << "中間要素の削除に失敗した";
 			EXPECT_EQ(dummy, list.End()) << "末尾(ダミーノード)以外を指すイテレータを取得した";
@@ -726,9 +726,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndConstIteratorTest, TestGetEndConstIteratorWhenEmpty)
 		{
-			LinkedList list;
+			MyList list;
 
-			LinkedList::ConstIterator dummy = list.ConstDummy();
+			MyList::ConstIterator dummy = list.ConstDummy();
 			EXPECT_EQ(dummy, list.ConstEnd()) << "ダミーノード以外を指すコンストイテレータを取得した";
 		}
 
@@ -741,11 +741,11 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndConstIteratorTest, TestGetEndConstIteratorWhenOnce)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::ConstIterator dummy = list.ConstDummy();
+			MyList::ConstIterator dummy = list.ConstDummy();
 			EXPECT_EQ(dummy, list.ConstEnd()) << "末尾(ダミーノード)以外を指すコンストイテレータを取得した";
 		}
 
@@ -758,12 +758,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndConstIteratorTest, TestGetEndConstIteratorWhenMulti)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::ConstIterator dummy = list.ConstDummy();
+			MyList::ConstIterator dummy = list.ConstDummy();
 			EXPECT_EQ(dummy, list.ConstEnd()) << "末尾(ダミーノード)以外を指すコンストイテレータを取得した";
 		}
 
@@ -776,8 +776,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndConstIteratorTest, TestGetEndConstIteratorWhenAfterInsert)
 		{
-			LinkedList list;
-			LinkedList::ConstIterator dummy = list.ConstDummy();
+			MyList list;
+			MyList::ConstIterator dummy = list.ConstDummy();
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 
@@ -785,7 +785,7 @@ namespace ex01_DataStructure
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(0, "Begin"))) << "先頭への挿入に失敗した";
 			EXPECT_EQ(dummy, list.ConstEnd()) << "末尾(ダミーノード)以外を指すコンストイテレータを取得した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Insert(it, ResultData(0, "Center"))) << "中間への挿入に失敗した";
 			EXPECT_EQ(dummy, list.ConstEnd()) << "末尾(ダミーノード)以外を指すコンストイテレータを取得した";
@@ -803,15 +803,15 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(EndConstIteratorTest, TestGetEndConstIteratorWhenAfterRemove)
 		{
-			LinkedList list;
-			LinkedList::ConstIterator dummy = list.ConstDummy();
+			MyList list;
+			MyList::ConstIterator dummy = list.ConstDummy();
 
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗した";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(4, "Initial"))) << "初期要素の挿入に失敗した";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			++it;
 			ASSERT_TRUE(list.Remove(it)) << "中間要素の削除に失敗した";
 			EXPECT_EQ(dummy, list.ConstEnd()) << "末尾(ダミーノード)以外を指すコンストイテレータを取得した";
@@ -837,10 +837,10 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorGetTest, TestGetElemToNullListRef)
 		{
-			LinkedList::Iterator it;
+			MyList::Iterator it;
 			EXPECT_DEATH(*it, "Assertion failed. *");
 
-			LinkedList::ConstIterator cit;
+			MyList::ConstIterator cit;
 			EXPECT_DEATH(*cit, "Assertion failed. *");
 		}
 
@@ -853,11 +853,11 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorGetTest, TestUpdateElemFromIterator)
 		{
-			LinkedList list;
+			MyList list;
 
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の代入に失敗";
 
-			LinkedList::Iterator it = list.Begin();
+			MyList::Iterator it = list.Begin();
 			(*it)._Score = 99;
 			it = list.Begin();
 
@@ -873,9 +873,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorGetTest, TestGetFromIteratorWhenEmpty)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList list;
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_DEATH(*it, "Assertion failed. *");
 			EXPECT_DEATH(*cit, "Assertion failed. *");
@@ -890,9 +890,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorGetTest, TestGetFromEndIterator)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.End();
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList list;
+			MyList::Iterator it = list.End();
+			MyList::ConstIterator cit = list.ConstEnd();
 
 			EXPECT_DEATH(*it, "Assertion failed. *");
 			EXPECT_DEATH(*cit, "Assertion failed. *");
@@ -909,8 +909,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestIncrementWhenNullListRef)
 		{
-			LinkedList::Iterator it;
-			LinkedList::ConstIterator cit;
+			MyList::Iterator it;
+			MyList::ConstIterator cit;
 
 			EXPECT_DEATH(it++, "Assertion failed. *");
 			EXPECT_DEATH(cit++, "Assertion failed. *");
@@ -925,9 +925,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestIncrementWhenListEmpty)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList list;
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_DEATH(it++, "Assertion failed. *");
 			EXPECT_DEATH(cit++, "Assertion failed. *");
@@ -942,10 +942,10 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestIncrementToEndIterator)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
-			LinkedList::Iterator it = list.End();
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList::Iterator it = list.End();
+			MyList::ConstIterator cit = list.ConstEnd();
 
 			EXPECT_DEATH(it++, "Assertion failed. *");
 			EXPECT_DEATH(cit++, "Assertion failed. *");
@@ -960,13 +960,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestIncrementNormal)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_EQ(ResultData(1, "Initial"), *it) << "初期要素<1>の参照が想定しているものと異なる";
 			EXPECT_EQ(ResultData(1, "Initial"), *cit) << "初期要素<1>の参照が想定しているものと異なる";
@@ -989,12 +989,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestPreIncrement)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_EQ(ResultData(2, "Initial"), *(++it)) << "インクリメント時の値が正しくない";
 			EXPECT_EQ(ResultData(2, "Initial"), *it) << "インクリメント後の値が正しくない";
@@ -1011,12 +1011,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorIncrementTest, TestAfterIncrement)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_EQ(ResultData(1, "Initial"), *(it++)) << "インクリメント時の値が正しくない";
 			EXPECT_EQ(ResultData(2, "Initial"), *it) << "インクリメント後の値が正しくない";
@@ -1035,8 +1035,8 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestDecrementWhenNullListRef)
 		{
-			LinkedList::Iterator it;
-			LinkedList::ConstIterator cit;
+			MyList::Iterator it;
+			MyList::ConstIterator cit;
 
 			EXPECT_DEATH(it--, "Assertion failed. *");
 			EXPECT_DEATH(cit--, "Assertion failed. *");
@@ -1051,9 +1051,9 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestDecrementWhenListEmpty)
 		{
-			LinkedList list;
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList list;
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_DEATH(it--, "Assertion failed. *");
 			EXPECT_DEATH(cit--, "Assertion failed. *");
@@ -1068,10 +1068,10 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestDecrementToBeginIterator)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
-			LinkedList::Iterator it = list.Begin();
-			LinkedList::ConstIterator cit = list.ConstBegin();
+			MyList::Iterator it = list.Begin();
+			MyList::ConstIterator cit = list.ConstBegin();
 
 			EXPECT_DEATH(it--, "Assertion failed. *");
 			EXPECT_DEATH(cit--, "Assertion failed. *");
@@ -1086,13 +1086,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestDecrementNormal)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(3, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.End();
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList::Iterator it = list.End();
+			MyList::ConstIterator cit = list.ConstEnd();
 			it--;
 			cit--;
 
@@ -1117,13 +1117,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestPreDecrement)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.End();
+			MyList::Iterator it = list.End();
 			it--;
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList::ConstIterator cit = list.ConstEnd();
 			cit--;
 
 			EXPECT_EQ(ResultData(1, "Initial"), *(--it)) << "デクリメント時の値が正しくない";
@@ -1141,13 +1141,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorDecrementTest, TestAfterDecrement)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(2, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator it = list.End();
+			MyList::Iterator it = list.End();
 			it--;
-			LinkedList::ConstIterator cit = list.ConstEnd();
+			MyList::ConstIterator cit = list.ConstEnd();
 			cit--;
 
 			EXPECT_EQ(ResultData(2, "Initial"), *(it--)) << "デクリメント時の値が正しくない";
@@ -1167,13 +1167,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCopyTest, TestCopy)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator src = list.Begin();
-			LinkedList::Iterator dst(src);
-			LinkedList::ConstIterator csrc = list.ConstBegin();
-			LinkedList::ConstIterator cdst(csrc);
+			MyList::Iterator src = list.Begin();
+			MyList::Iterator dst(src);
+			MyList::ConstIterator csrc = list.ConstBegin();
+			MyList::ConstIterator cdst(csrc);
 
 			EXPECT_EQ(src, dst) << "コピー元と値が異なる";
 			EXPECT_EQ(csrc, cdst) << "コピー元と値が異なる";
@@ -1190,14 +1190,14 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorAssignTest, TestAssign)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.End(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator src = list.Begin();
-			LinkedList::Iterator dst;
+			MyList::Iterator src = list.Begin();
+			MyList::Iterator dst;
 			dst = src;
-			LinkedList::ConstIterator csrc = list.ConstBegin();
-			LinkedList::ConstIterator cdst;
+			MyList::ConstIterator csrc = list.ConstBegin();
+			MyList::ConstIterator cdst;
 			cdst = csrc;
 
 			EXPECT_EQ(src, dst) << "コピー元と値が異なる";
@@ -1215,12 +1215,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestEqualBeginAndEnd)
 		{
-			LinkedList list;
+			MyList list;
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.End();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstEnd();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.End();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstEnd();
 
 			EXPECT_EQ(true, A == B) << "イテレータが異なる";
 			EXPECT_EQ(true, cA == cB) << "イテレータが異なる";
@@ -1235,13 +1235,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestEqualAandA)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.Begin();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstBegin();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.Begin();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstBegin();
 
 			EXPECT_EQ(true, A == B) << "イテレータが異なる";
 			EXPECT_EQ(true, cA == cB) << "イテレータが異なる";
@@ -1256,13 +1256,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestEqualAandB)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.End();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstEnd();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.End();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstEnd();
 
 			EXPECT_EQ(false, A == B) << "イテレータが同一";
 			EXPECT_EQ(false, cA == cB) << "イテレータが同一";
@@ -1279,12 +1279,12 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestNotEqualBeginAndEnd)
 		{
-			LinkedList list;
+			MyList list;
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.End();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstEnd();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.End();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstEnd();
 
 			EXPECT_EQ(false, A != B) << "イテレータが同一";
 			EXPECT_EQ(false, cA != cB) << "イテレータが同一";
@@ -1299,13 +1299,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestNotEqualAandA)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.Begin();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstBegin();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.Begin();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstBegin();
 
 			EXPECT_EQ(false, A != B) << "イテレータが異なる";
 			EXPECT_EQ(false, cA != cB) << "イテレータが異なる";
@@ -1320,13 +1320,13 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(IteratorCompareTest, TestNotEqualAandB)
 		{
-			LinkedList list;
+			MyList list;
 			ASSERT_TRUE(list.Insert(list.Begin(), ResultData(1, "Initial"))) << "初期要素の挿入に失敗";
 
-			LinkedList::Iterator A = list.Begin();
-			LinkedList::Iterator B = list.End();
-			LinkedList::ConstIterator cA = list.ConstBegin();
-			LinkedList::ConstIterator cB = list.ConstEnd();
+			MyList::Iterator A = list.Begin();
+			MyList::Iterator B = list.End();
+			MyList::ConstIterator cA = list.ConstBegin();
+			MyList::ConstIterator cB = list.ConstEnd();
 
 			EXPECT_EQ(true, A != B) << "イテレータが同一";
 			EXPECT_EQ(true, cA != cB) << "イテレータが同一";

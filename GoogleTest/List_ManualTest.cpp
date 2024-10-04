@@ -1,19 +1,10 @@
-﻿/**********************************************************************************//**
-	@file           List_ManualTest.cpp
-	@brief          GoogleTest手動テストコードの書き方サンプル
-	@par            手動テストとは、チェックリスト内の「自動テスト化しなくてよい」項目を指します。
-	                defineマクロの条件分岐により、必要なものだけコンパイル対象になるようにしてください。
-	@note Copyright (c) FromSoftware, Inc.
-*//***********************************************************************************/
-
-
-//--------------------------------------------------------------------------------
+﻿//--------------------------------------------------------------------------------
 // ファイル依存関係
 //--------------------------------------------------------------------------------
-// GoogleTestのヘッダ。ウィザードにて別のファイルに記述されている場合は、不要です。
+// GoogleTestのヘッダ
 #include <gtest/gtest.h>
 
-// 例。自分のプロジェクトにあったヘッダファイルをincludeしてください。
+// 例。自分の双方向リスト
 #include "../1_2/MyList.h"
 
 #include "List_ManualTest.h"
@@ -36,7 +27,7 @@ namespace ex01_DataStructure
 		TEST(GetDataNumTest, TestGetDataNumWhenConst)
 		{
 #if defined TT_TEST_GET_DATA_NUM_IS_CONST
-			const LinkedList list;
+			const MyList list;
 			EXPECT_EQ(0, list.Size());
 #endif //TT_TEST_GET_DATA_NUM_WHEN_CONST
 			SUCCEED();
@@ -114,8 +105,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetBeginConstIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_BEGIN_CONST_ITERATOR_WHEN_CONST
-			const LinkedList list;
-			LinkedList::ConstIterator it = list.ConstBegin();
+			const MyList list;
+			MyList::ConstIterator it = list.ConstBegin();
 #endif //TT_TEST_GET_BEGIN_CONST_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}
@@ -152,8 +143,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetEndConstIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_END_CONST_ITERATOR_WHEN_CONST
-			const LinkedList list;
-			LinkedList::ConstIterator it = list.ConstEnd();	// ここでエラー
+			const MyList list;
+			MyList::ConstIterator it = list.ConstEnd();	// ここでエラー
 #endif //TT_TEST_GET_END_CONST_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}

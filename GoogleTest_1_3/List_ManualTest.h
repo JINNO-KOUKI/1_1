@@ -1,10 +1,4 @@
-﻿/**********************************************************************************//**
-	@file           List_ManualTest.h
-	@brief          GoogleTest手動テストコードの書き方サンプル定義、宣言   
-	@note Copyright (c) FromSoftware, Inc.
-*//***********************************************************************************/
-
-#if !defined ___TECHTRAINING_CHAPTER2_LIST_MANUAL_TEST___
+﻿#if !defined ___TECHTRAINING_CHAPTER2_LIST_MANUAL_TEST___
 #define      ___TECHTRAINING_CHAPTER2_LIST_MANUAL_TEST___
 
 //--------------------------------------------------------------------------------

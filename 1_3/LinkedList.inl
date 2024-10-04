@@ -9,13 +9,13 @@
 // ####### コンストラクタ群 ##########################
 
 /// @brief		デフォルトコンストラクタ
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @detail		初期状態では、PrevもNextも自身へのポインタを持ちます
 template <typename T>
 inline LinkedList<T>::Node::Node() : _Data(T()), _Prev(this), _Next(this) {}
 
 /// @brief			コピーコンストラクタ
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	コピー元
 template <typename T>
 inline LinkedList<T>::Node::Node(const Node& other)
@@ -24,7 +24,7 @@ inline LinkedList<T>::Node::Node(const Node& other)
 // ####### 演算子オーバーロード群 ##########################
 
 /// @brief			等価比較演算子
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	右辺要素
 /// @return			比較結果
 /// @detail			ノード内の各要素それぞれが、すべて同一かどうかで判断します
@@ -35,7 +35,7 @@ inline bool LinkedList<T>::Node::operator==(const Node& other) const noexcept
 }
 
 /// @brief			非等価比較演算子
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	右辺要素
 /// @return			比較結果
 /// @detail			ノード内の各要素それぞれに対して比較を行い、一つでも異なればtrueを返します
@@ -53,20 +53,20 @@ inline bool LinkedList<T>::Node::operator!=(const Node& other)
 // ####### コンストラクタ群 ##########################
 
 /// @brief		デフォルトコンストラクタ
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @detail		初期状態では、指す先も関連付けされたリストも存在しない、不正イテレータになります。
 template <typename T>
 inline LinkedList<T>::ConstIterator::ConstIterator() : _Target(nullptr), _List(nullptr) {}
 
 /// @brief			引数付きコンストラクタ
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param target	イテレータが指し示すノード
 /// @param list		関連付けられるリストのポインタ
 template <typename T>
 inline LinkedList<T>::ConstIterator::ConstIterator(Node* target, const LinkedList<T>* list) : _Target(target), _List(list) {}
 
 /// @brief			コピーコンストラクタ
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	コピー元
 template <typename T>
 inline LinkedList<T>::ConstIterator::ConstIterator(const ConstIterator& other)
@@ -76,7 +76,7 @@ inline LinkedList<T>::ConstIterator::ConstIterator(const ConstIterator& other)
 }
 
 /// @brief			ムーブコンストラクタ
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	移動元
 template <typename T>
 inline LinkedList<T>::ConstIterator::ConstIterator(ConstIterator&& other) noexcept
@@ -91,11 +91,11 @@ inline LinkedList<T>::ConstIterator::ConstIterator(ConstIterator&& other) noexce
 // ####### 演算子オーバーロード群 ##########################
 
 /// @brief			コピー代入演算子
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	コピー元
 /// @return			コピーされた値
 template <typename T>
-inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(const LinkedList<T>::ConstIterator& other) noexcept
+inline typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(const LinkedList<T>::ConstIterator& other) noexcept
 {
 	_Target = other._Target;
 	_List = other._List;
@@ -103,11 +103,11 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(con
 }
 
 /// @brief			ムーブ代入演算子
-/// @tparam	T		格納するデータ型
+/// @tparam	T		格納されているデータ型
 /// @param other	ムーブ元
 /// @return			ムーブされた値
 template <typename T>
-inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(ConstIterator&& other) noexcept
+inline typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(ConstIterator&& other) noexcept
 {
 	_Target = other._Target;
 	_List = other._List;
@@ -116,7 +116,7 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator=(Con
 }
 
 /// @brief		イテレータの指す要素を取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		const要素
 /// @details	※以下の条件に当てはまる場合、Assertが発生します\n
 ///				・関連付けされたリストがない\n
@@ -133,7 +133,7 @@ inline const T& LinkedList<T>::ConstIterator::operator*() const noexcept
 }
 
 /// @brief		前置インクリメント
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		インクリメントされた後の値
 /// @details	リストの末尾に向かって、このイテレータが指す先を一つ進めます\n
 ///				※以下の条件に当てはまる場合、Assertが発生します\n
@@ -141,7 +141,7 @@ inline const T& LinkedList<T>::ConstIterator::operator*() const noexcept
 ///				・参照先リストが空\n
 ///				・ダミーノードを指すイテレータである
 template <typename T>
-inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator++()
+inline typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator++()
 {
 	assert(_List != nullptr);
 	assert(_List->Size() != 0);
@@ -152,7 +152,7 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator++()
 }
 
 /// @brief		前置デクリメント
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		デクリメントされた後の値
 /// @details	リストの先頭に向かって、このイテレータが指す先を一つ進めます\n
 ///				※以下の条件に当てはまる場合、Assertが発生します\n
@@ -160,7 +160,7 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator++()
 ///				・参照先リストが空\n
 ///				・先頭要素を指すイテレータである
 template <typename T>
-inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator--()
+inline typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator--()
 {
 	assert(_List != nullptr);
 	assert(_List->Size() != 0);
@@ -171,7 +171,7 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator--()
 }
 
 /// @brief		後置インクリメント
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		インクリメントされる前の値
 /// @details	リストの末尾に向かって、このイテレータが指す先を一つ進めます\n
 ///				※以下の条件に当てはまる場合、Assertが発生します\n
@@ -179,7 +179,7 @@ inline LinkedList<T>::ConstIterator& LinkedList<T>::ConstIterator::operator--()
 ///				・参照先リストが空\n
 ///				・ダミーノードを指すイテレータである
 template <typename T>
-inline LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator++(int)
+inline typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator++(int)
 {
 	assert(_List != nullptr);
 	assert(_List->Size() != 0);
@@ -191,7 +191,7 @@ inline LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator++(int
 }
 
 /// @brief		後置デクリメント
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		デクリメントされる前の値
 /// @details	リストの先頭に向かって、このイテレータが指す先を一つ進めます\n
 ///				※以下の条件に当てはまる場合、Assertが発生します\n
@@ -199,7 +199,7 @@ inline LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator++(int
 ///				・参照先リストが空\n
 ///				・先頭要素を指すイテレータである
 template <typename T>
-inline LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator--(int)
+inline typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator--(int)
 {
 	assert(_List != nullptr);
 	assert(_List->Size() != 0);
@@ -211,7 +211,7 @@ inline LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator--(int
 }
 
 /// @brief			等価比較演算子
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	右辺要素
 /// @return			比較結果
 /// @detail			イテレータの指し示すノードと関連付けされたリストが同一か判定します
@@ -222,7 +222,7 @@ inline bool LinkedList<T>::ConstIterator::operator==(const ConstIterator& other)
 }
 
 /// @brief			非等価比較演算子
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param other	右辺要素
 /// @return			比較結果
 /// @detail			イテレータの指し示すノードと関連付けされたリストのいずれか一つ以上が異なるか判定します
@@ -239,34 +239,23 @@ inline bool LinkedList<T>::ConstIterator::operator!=(const ConstIterator& other)
 // ####### コンストラクタ群 ##########################
 
 /// @brief		デフォルトコンストラクタ
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @detail		初期状態では、指す先も関連付けされたリストも存在しない、不正イテレータになります。
 template <typename T>
 inline LinkedList<T>::Iterator::Iterator() : LinkedList<T>::ConstIterator() {}
 
 /// @brief			引数付きコンストラクタ
-/// @tparam T		格納するデータ型
+/// @tparam T		格納されているデータ型
 /// @param target	イテレータが指し示すノード
 /// @param list		関連付けされたリストのポインタ
 template <typename T>
 inline LinkedList<T>::Iterator::Iterator(Node* target, LinkedList<T>* list) : ConstIterator(target, list) {}
 
-/// @brief		ConstIteratorからのコピーコンストラクタ
-/// @tparam T	格納するデータ型
-/// @detail		ConstIteratorを使用してコピーを作成できないようにします
-template <typename T>
-inline LinkedList<T>::Iterator::Iterator(const ConstIterator&) = delete;
 
 // ####### コンストラクタ群 ##########################
 
-/// @brief		ConstIterator用コピー代入演算子
-/// @tparam T	格納するデータ型
-/// @detail		ConstIteratorからの呼び出しを禁止しています
-template <typename T>
-inline LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator=(const ConstIterator& other) = delete;
-
 /// @brief		イテレータの指す要素を非const要素として取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		非const要素
 /// @details	※以下の条件に当てはまる場合、Assertが発生します\n
 ///				・関連付けされたリストがない\n
@@ -275,13 +264,12 @@ inline LinkedList<T>::Iterator& LinkedList<T>::Iterator::operator=(const ConstIt
 template <typename T>
 inline T& LinkedList<T>::Iterator::operator*() const noexcept
 {
-	assert(_List != nullptr);
-	assert(_Target != &_List->_EOL);
-	assert(_Target != nullptr);
+	assert(this->_List != nullptr);
+	assert(this->_Target != &this->_List->_EOL);
+	assert(this->_Target != nullptr);
 
-	return _Target->_Data;
+	return this->_Target->_Data;
 }
-
 
 // ====================================================================================
 //		LinkedListの実装
@@ -290,25 +278,25 @@ inline T& LinkedList<T>::Iterator::operator*() const noexcept
 // ####### コンストラクタ群 ##########################
 
 /// @brief	デフォルトコンストラクタ
-/// @tparam T 格納するデータ型
+/// @tparam T 格納されているデータ型
 template <typename T>
 inline LinkedList<T>::LinkedList() : _EOL(Node()), _Dummy(&_EOL, this), _Size(0) {}
 
 /// @brief		デストラクタ
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 template <typename T>
 inline LinkedList<T>::~LinkedList() { Clear(); }
 
 // ####### メンバ関数群 ##########################
 
 /// @brief		リスト内のデータ数を取得します
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		リスト内のデータ数
 template <typename T>
 inline unsigned int LinkedList<T>::Size() const noexcept { return _Size; }
 
 /// @brief				新規要素を挿入する
-/// @tparam T			格納するデータ型
+/// @tparam T			格納されているデータ型
 /// @param inIterator	挿入する場所を示すイテレータ
 /// @param inData		挿入する成績データ
 /// @return				データの挿入に成功した場合はTRUE、失敗した場合はFALSE
@@ -352,7 +340,7 @@ inline bool LinkedList<T>::Insert(const ConstIterator& inIterator, const T& inDa
 }
 
 /// @brief				要素を削除する
-/// @tparam T			格納するデータ型
+/// @tparam T			格納されているデータ型
 /// @param inIterator	削除したい要素を指すイテレータ
 /// @return				削除に成功したらTRUE、失敗したらFALSE
 /// @details			イテレータが指し示す要素を削除して、前後の要素をつなげます。\n
@@ -393,7 +381,7 @@ inline bool LinkedList<T>::Remove(const ConstIterator& inIterator)
 }
 
 /// @brief		リストに格納されているすべての要素を削除する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		削除に成功したらTRUE、失敗したらFALSE
 ///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
 ///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
@@ -436,51 +424,51 @@ inline bool LinkedList<T>::Clear()
 }
 
 /// @brief		先頭のイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		先頭のイテレータ
 /// @detail		要素が一つも存在しない場合は、ダミーノードを指すイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::Iterator LinkedList<T>::Begin() noexcept { return Iterator(_EOL._Next, this); }
+inline typename LinkedList<T>::Iterator LinkedList<T>::Begin() noexcept { return Iterator(_EOL._Next, this); }
 
 /// @brief		先頭のイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		先頭のイテレータ
 /// @details	範囲for文に対応させるための別名関数です。Begin()と同一の動作をします。
 ///				要素が一つも存在しない場合は、ダミーノードを指すイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::Iterator LinkedList<T>::begin() noexcept { return Begin(); }
+inline typename LinkedList<T>::Iterator LinkedList<T>::begin() noexcept { return Begin(); }
 
 /// @brief		末尾のイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		末尾のイテレータ
 /// @detail		いかなる場合でも、常にダミーノードを指すイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::Iterator LinkedList<T>::End() noexcept { return Iterator(&_EOL, this); }
+inline typename LinkedList<T>::Iterator LinkedList<T>::End() noexcept { return Iterator(&_EOL, this); }
 
 /// @brief		末尾のイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		末尾のイテレータ
 /// @details	範囲for文に対応させるための別名関数です。End()と同一の動作をします。
 ///				いかなる場合でも、常にダミーノードを指すイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::Iterator LinkedList<T>::end() noexcept { return End(); }
+inline typename LinkedList<T>::Iterator LinkedList<T>::end() noexcept { return End(); }
 
 /// @brief		先頭のコンストイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		先頭のコンストイテレータ
 /// @detail		要素が一つも存在しない場合は、ダミーノードを指すコンストイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::ConstIterator LinkedList<T>::ConstBegin() const noexcept { return ConstIterator(_EOL._Next, this); }
+inline typename LinkedList<T>::ConstIterator LinkedList<T>::ConstBegin() const noexcept { return ConstIterator(_EOL._Next, this); }
 
 /// @brief		末尾のコンストイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		末尾のコンストイテレータ
 /// @detail		いかなる場合でも、常にダミーノードを指すコンストイテレータを返却します。
 template <typename T>
-inline LinkedList<T>::ConstIterator LinkedList<T>::ConstEnd() const noexcept { return ConstIterator(const_cast<Node*>(&_EOL), this); }
+inline typename LinkedList<T>::ConstIterator LinkedList<T>::ConstEnd() const noexcept { return ConstIterator(const_cast<Node*>(&_EOL), this); }
 
 /// @brief		リストの先頭要素を取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		リストの先頭要素
 /// @details	要素が一つも格納されていない場合は、Assertが発生します。\n
 ///				渡される値はコピーです。
@@ -492,7 +480,7 @@ inline T LinkedList<T>::Front() const noexcept
 }
 
 /// @brief		リストの末尾要素を取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		リストの末尾要素
 /// @details	要素が一つも格納されていない場合は、Assertが発生します。\n
 ///				渡される値はコピーです。
@@ -504,21 +492,21 @@ inline T LinkedList<T>::Back() const noexcept
 }
 
 /// @brief		ダミーノードを指すイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		ダミーノードを指すイテレータ
 /// @details	ダミーノードを指すイテレータを返却します。\n
 ///				End()で返されるイテレータと同一です。\n
 ///				この関数由来のもの以外で、ダミーノードを指すイテレータであることが想定される際に\n
 ///				同一のイテレータか確認するために使用します。
 template <typename T>
-inline const LinkedList<T>::Iterator& LinkedList<T>::Dummy() noexcept { return _Dummy; }
+inline const typename LinkedList<T>::Iterator& LinkedList<T>::Dummy() noexcept { return _Dummy; }
 
 /// @brief		ダミーノードを指すコンストイテレータを取得する
-/// @tparam T	格納するデータ型
+/// @tparam T	格納されているデータ型
 /// @return		ダミーノードを指すコンストイテレータ
 /// @details	ダミーノードを指すコンストイテレータを返却します。\n
 ///				ConstEnd()で返されるコンストイテレータと同一です。\n
 ///				この関数由来のもの以外で、ダミーノードを指すコンストイテレータであることが想定される際に\n
 ///				同一のコンストイテレータか確認するために使用します。
 template <typename T>
-inline const LinkedList<T>::ConstIterator& LinkedList<T>::ConstDummy() const noexcept { return static_cast<ConstIterator>(_Dummy); }
+inline const typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstDummy() const noexcept { return _Dummy; }

@@ -9,14 +9,12 @@ namespace
 	/// @brief 開くファイルパス
 	const string kFileName = "Scores.txt";
 
-	
+	struct StudentData
+	{
+		int _Score = 0;
+		string _Name = "";
+	};
 }
-
-struct StudentData
-{
-	int _Score;
-	string _Name;
-};
 
 int main()
 {
