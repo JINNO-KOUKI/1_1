@@ -6,16 +6,16 @@
 /// @brief		自作の双方向リストクラス
 /// @details	ダミーノードを起点に、要素が循環するように配置されています。\n
 ///				ダミーノードの_Nextは先頭要素、_Prevは末尾要素になります。
-class LinkedList
+class MyList
 {
 public:
 	/// @brief デフォルトコンストラクタ
-	LinkedList() : _EOL(Node()), _Dummy(&_EOL, this), _ConstDummy(&_EOL, this), _Size(0)
+	MyList() : _EOL(Node()), _Dummy(&_EOL, this), _ConstDummy(&_EOL, this), _Size(0)
 			 , _Begin(Iterator(&_EOL, this)), _End(Iterator(&_EOL, this))
 			 , _ConstBegin(ConstIterator(&_EOL, this)), _ConstEnd(ConstIterator(&_EOL, this)){}
 
 	/// @brief デストラクタ
-	~LinkedList() { Clear(); }
+	~MyList() { Clear(); }
 
 private:
 	/// @brief		リスト内の一要素を表す構造体
@@ -69,7 +69,7 @@ public:
 	{
 		/// @brief	MyListへのフレンド属性定義
 		/// @detail	メンバ変数へのアクセスは、サブクラスとMyListクラスからのみ可能としています
-		friend LinkedList;
+		friend MyList;
 
 	public:	// コンストラクタ群
 
@@ -80,7 +80,7 @@ public:
 		/// @brief			引数付きコンストラクタ
 		/// @param target	イテレータが指し示すノード
 		/// @param list		関連付けされたリストのポインタ
-		Iterator(Node* target, LinkedList* list) : _Target(target), _List(list) {}
+		Iterator(Node* target, MyList* list) : _Target(target), _List(list) {}
 
 		/// @brief	ConstIteratorからのコピーコンストラクタ
 		/// @detail	ConstIteratorを使用してコピーを作成できないようにします
@@ -240,7 +240,7 @@ public:
 		/// @brief イテレータの指しているノード
 		Node* _Target;
 		/// @brief 自身と関連付けられているリストのポインタ
-		LinkedList* _List;
+		MyList* _List;
 	};
 
 	class ConstIterator : public Iterator
@@ -253,7 +253,7 @@ public:
 		/// @brief			引数付きコンストラクタ
 		/// @param target	イテレータが指し示すノード
 		/// @param list		関連付けられるリストのポインタ
-		ConstIterator(Node* target, LinkedList* list) : Iterator(target, list) {}
+		ConstIterator(Node* target, MyList* list) : Iterator(target, list) {}
 
 		/// @brief			コピーコンストラクタ
 		/// @param other	コピー元

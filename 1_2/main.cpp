@@ -15,7 +15,7 @@ int main()
 	// メモリリークチェック
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	LinkedList list;
+	MyList list;
 	// -- ファイルを開く
 	ifstream ifs(kFileName);
 	if (!ifs)
@@ -23,7 +23,7 @@ int main()
 		cerr << "Error: ファイルを開けませんでした。" << endl;
 	}
 
-	LinkedList tResultList;	// 格納先リストの定義
+	MyList tResultList;	// 格納先リストの定義
 
 	// -- ファイルの終端まで読み込み
 	while (true)
