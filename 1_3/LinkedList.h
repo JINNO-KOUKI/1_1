@@ -219,10 +219,10 @@ public:
 	inline bool Remove(const ConstIterator& inIterator);
 
 	/// @brief		リストに格納されているすべての要素を削除する
+	/// @tparam T	格納されているデータ型
 	/// @return		削除に成功したらTRUE、失敗したらFALSE
 	///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
-	///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
-	///				Assertが発生します。
+	///				要素が空になるまで、繰り返しRemove(LinkedList::Begin())を実行しています。
 	inline bool Clear();
 
 	/// @brief	先頭のイテレータを取得する

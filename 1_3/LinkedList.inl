@@ -42,7 +42,7 @@ inline bool LinkedList<T>::Node::operator==(const Node& other) const noexcept
 template <typename T>
 inline bool LinkedList<T>::Node::operator!=(const Node& other)
 {
-	return !((_Prev == other._Prev) && (_Next) == (other._Next) && (_Data) == (other._Data));
+	return !(*this == other);
 }
 
 
@@ -384,42 +384,12 @@ inline bool LinkedList<T>::Remove(const ConstIterator& inIterator)
 /// @tparam T	格納されているデータ型
 /// @return		削除に成功したらTRUE、失敗したらFALSE
 ///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
-///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
-///				Assertが発生します。
+///				要素が空になるまで、繰り返しRemove(LinkedList::Begin())を実行しています。
 template <typename T>
 inline bool LinkedList<T>::Clear()
 {
-	// 要素数0だったら終了
-	if (!_Size) { return true; }
-
-	// 最後尾のノードを取得
-	Node* tNode = _EOL._Prev;
-
-	// -- ダミーノードを指し示すまで繰り返し
-	while (true)
-	{
-		// 一つ前の要素に移動
-		tNode = tNode->_Prev;
-
-		// 次の要素を削除
-		delete tNode->_Next;
-
-		// サイズを更新
-		--_Size;
-
-		// サイズが負の値になった場合、Assertを発生させる
-		assert(_Size >= 0);
-
-		// ダミーノードを指し示したら終了
-		if (tNode == &_EOL) { break; }
-	}
-	// 想定通り全要素の削除が完了していない場合、Assertを発生させる
-	assert(_Size == 0);
-
-	// -- メンバ変数の初期化
-	_EOL._Prev = &_EOL;
-	_EOL._Next = &_EOL;
-
+	while (_Size > 0) { Remove(Begin()); }
+	
 	return true;
 }
 
