@@ -10,7 +10,7 @@ class MyList
 {
 public:
 	/// @brief デフォルトコンストラクタ
-	MyList() : _EOL(Node()), _Dummy(&_EOL, this), _ConstDummy(&_EOL, this), _Size(0) {}
+	MyList() : _EOL(Node()), _Dummy(&_EOL, this), _Size(0) {}
 
 	/// @brief デストラクタ
 	~MyList() { Clear(); }
