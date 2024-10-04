@@ -1,17 +1,17 @@
 ﻿//--------------------------------------------------------------------------------
 // ファイル依存関係
 //--------------------------------------------------------------------------------
-// GoogleTestのヘッダ
+// GoogleTestのヘッダ。
 #include <gtest/gtest.h>
 
 // 例。自分の双方向リスト
-#include "../1_2/MyList.h"
+#include "../1_3/LinkedList.h"
 
 #include "List_ManualTest.h"
 
 namespace ex01_DataStructure
 {
-	namespace chapter2
+	namespace chapter3
 	{
 		//--------------------------------------------------------------------------------
 		// コンパイル関連手動テスト
@@ -27,7 +27,7 @@ namespace ex01_DataStructure
 		TEST(GetDataNumTest, TestGetDataNumWhenConst)
 		{
 #if defined TT_TEST_GET_DATA_NUM_IS_CONST
-			const MyList list;
+			const LinkedList<int> list;
 			EXPECT_EQ(0, list.Size());
 #endif //TT_TEST_GET_DATA_NUM_WHEN_CONST
 			SUCCEED();
@@ -46,9 +46,9 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestInsertWhenConst)
 		{
 #if defined TT_TEST_INSERT_WHEN_CONST
-			const MyList list;
-			MyList::ConstIterator it = list.ConstEnd();
-			list.Insert(it, ResultData());//ここでエラー
+			const LinkedList<int> list;
+			LinkedList<int>::ConstIterator it = list.ConstEnd();
+			list.Insert(it, 1);//ここでエラー
 #endif //TT_TEST_INSERT_WHEN_CONST
 			SUCCEED();
 		}
@@ -66,8 +66,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestRemoveWhenConst)
 		{
 #if defined TT_TEST_REMOVE_WHEN_CONST
-			const MyList list;
-			MyList::ConstIterator it = list.ConstBegin();
+			const LinkedList<int> list;
+			LinkedList<int>::ConstIterator it = list.ConstBegin();
 			list.Remove(it);//ここでエラー
 #endif //TT_TEST_REMOVE_WHEN_CONST
 			SUCCEED();
@@ -86,8 +86,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetBeginIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_BEGIN_ITERATOR_WHEN_CONST
-			const MyList list;
-			MyList::Iterator it = list.Begin();	// ここでエラー
+			const LinkedList<int> list;
+			LinkedList<int>::Iterator it = list.Begin();	// ここでエラー
 #endif //TT_TEST_GET_BEGIN_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}
@@ -105,8 +105,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetBeginConstIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_BEGIN_CONST_ITERATOR_WHEN_CONST
-			const MyList list;
-			MyList::ConstIterator it = list.ConstBegin();
+			const LinkedList<int> list;
+			LinkedList<int>::ConstIterator it = list.ConstBegin();
 #endif //TT_TEST_GET_BEGIN_CONST_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}
@@ -124,8 +124,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetEndIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_END_ITERATOR_WHEN_CONST
-			const MyList list;
-			MyList::Iterator it = list.End();	// ここでエラー
+			const LinkedList<int> list;
+			LinkedList<int>::Iterator it = list.End();	// ここでエラー
 #endif //TT_TEST_GET_END_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}
@@ -143,8 +143,8 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestGetEndConstIteratorWhenConst)
 		{
 #if defined TT_TEST_GET_END_CONST_ITERATOR_WHEN_CONST
-			const MyList list;
-			MyList::ConstIterator it = list.ConstEnd();	// ここでエラー
+			const LinkedList<int> list;
+			LinkedList<int>::ConstIterator it = list.ConstEnd();	// ここでエラー
 #endif //TT_TEST_GET_END_CONST_ITERATOR_WHEN_CONST
 			SUCCEED();
 		}
@@ -162,9 +162,9 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestSetFromConstIterator)
 		{
 #if defined TT_TEST_SET_FROM_CONST_ITERATOR
-			MyList list;
-			MyList::ConstIterator it = list.ConstEnd();	
-			(*it)._Score = 99;	// ここでエラー
+			LinkedList<int> list;
+			LinkedList<int>::ConstIterator it = list.ConstEnd();	
+			(*it) = 99;	// ここでエラー
 #endif //TT_TEST_SET_FROM_CONST_ITERATOR
 			SUCCEED();
 		}
@@ -182,9 +182,9 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestCopyConstToNormal)
 		{
 #if defined TT_TEST_COPY_CONST_TO_NORMAL
-			MyList list;
-			MyList::ConstIterator cit = list.ConstEnd();	
-			MyList::Iterator it(cit);	// ここでエラー
+			LinkedList<int> list;
+			LinkedList<int>::ConstIterator cit = list.ConstEnd();	
+			LinkedList<int>::Iterator it(cit);	// ここでエラー
 #endif //TT_TEST_COPY_CONST_TO_NORMAL
 			SUCCEED();
 		}
@@ -202,9 +202,9 @@ namespace ex01_DataStructure
 		TEST(ListManualTest, TestAssignConstToNormal)
 		{
 #if defined TT_TEST_ASSIGN_CONST_TO_NORMAL
-			MyList list;
-			MyList::ConstIterator cit = list.ConstEnd();	
-			MyList::Iterator it;
+			LinkedList<int> list;
+			LinkedList<int>::ConstIterator cit = list.ConstEnd();	
+			LinkedList<int>::Iterator it;
 			it = cit;// ここでエラー
 #endif //TT_TEST_ASSIGN_CONST_TO_NORMAL
 			SUCCEED();
