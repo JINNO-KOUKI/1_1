@@ -148,6 +148,8 @@ public:
 		/// @detail			イテレータの指し示すノードと関連付けされたリストのいずれか一つ以上が異なるか判定します
 		bool operator!=(const ConstIterator& other) const noexcept;
 
+		int operator-(const ConstIterator& other) const;
+
 	protected:
 		/// @brief イテレータの指しているノード
 		Node* _Target;
@@ -221,8 +223,7 @@ public:
 	/// @brief		リストに格納されているすべての要素を削除する
 	/// @return		削除に成功したらTRUE、失敗したらFALSE
 	///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
-	///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
-	///				Assertが発生します。
+	///				リストが空になるまでRemove(LinkedList::Begin())を呼び出しています。
 	inline bool Clear();
 
 	template <typename Key>
@@ -291,7 +292,10 @@ public:
 	inline const ConstIterator& ConstDummy() const noexcept;
 
 private:
-	inline void QuickSort(const unsigned int& inLeftIndex, const unsigned int& inRightIndex);
+	inline void Swap(Node* pA, Node* pB) noexcept;
+
+	template <typename Key>
+	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::* key);
 
 private:
 	/// @brief リストの終端を表すノード

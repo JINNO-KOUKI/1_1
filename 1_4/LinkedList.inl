@@ -42,7 +42,7 @@ inline bool LinkedList<T>::Node::operator==(const Node& other) const noexcept
 template <typename T>
 inline bool LinkedList<T>::Node::operator!=(const Node& other)
 {
-	return !((_Prev == other._Prev) && (_Next) == (other._Next) && (_Data) == (other._Data));
+	return !(*this == other);
 }
 
 
@@ -232,6 +232,20 @@ inline bool LinkedList<T>::ConstIterator::operator!=(const ConstIterator& other)
 	return !(*this == other);
 }
 
+template <typename T>
+int LinkedList<T>::ConstIterator::operator-(const ConstIterator& other) const
+{
+	unsigned int tRange = 0;
+	for (ConstIterator it = *this; it != End(); ++it)
+	{ 
+		if (it == other) { return tRange; }
+		++tRange;
+	}
+	tRange = 0;
+	for(ConstIterator it = other;)
+	return tRange;
+}
+
 // ====================================================================================
 //		Iteratorの実装
 // ====================================================================================
@@ -381,44 +395,14 @@ inline bool LinkedList<T>::Remove(const ConstIterator& inIterator)
 }
 
 /// @brief		リストに格納されているすべての要素を削除する
-/// @tparam T	格納されているデータ型
 /// @return		削除に成功したらTRUE、失敗したらFALSE
 ///	@details	要素数が0の場合、何もせずにTRUEで終了します。\n
-///				要素数以上に削除処理が発生した場合や、すべての要素が正しく開放されなかった場合、\n
-///				Assertが発生します。
+///				リストが空になるまでRemove(LinkedList::Begin())を呼び出しています。
 template <typename T>
 inline bool LinkedList<T>::Clear()
 {
-	// 要素数0だったら終了
-	if (!_Size) { return true; }
-
-	// 最後尾のノードを取得
-	Node* tNode = _EOL._Prev;
-
-	// -- ダミーノードを指し示すまで繰り返し
-	while (true)
-	{
-		// 一つ前の要素に移動
-		tNode = tNode->_Prev;
-
-		// 次の要素を削除
-		delete tNode->_Next;
-
-		// サイズを更新
-		--_Size;
-
-		// サイズが負の値になった場合、Assertを発生させる
-		assert(_Size >= 0);
-
-		// ダミーノードを指し示したら終了
-		if (tNode == &_EOL) { break; }
-	}
-	// 想定通り全要素の削除が完了していない場合、Assertを発生させる
-	assert(_Size == 0);
-
-	// -- メンバ変数の初期化
-	_EOL._Prev = &_EOL;
-	_EOL._Next = &_EOL;
+	// 要素数0になったら終了
+	while (_Size > 0) { Remove(Begin()); }
 
 	return true;
 }
@@ -519,7 +503,35 @@ template <typename T>
 inline const typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstDummy() const noexcept { return _Dummy; }
 
 template <typename T>
-inline void LinkedList<T>::QuickSort(const unsigned int& inLeftIndex, const unsigned int& inRightIndex)
+inline void LinkedList<T>::Swap(Node* pA, Node* pB) noexcept
 {
+	Node* tA_Prev = pA->_Prev;
+	Node* tA_Next = pA->_Next;
 
+	pA->_Prev = pB->_Prev;
+	pA->_Next = pB->_Next;
+
+	pB->_Prev = tA_Prev;
+	pB->_Next = tA_Next;
+}
+
+template <typename T>
+template <typename Key>
+inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::* key)
+{
+	if (inRightIt - inLeftIt <= 1) { return; }
+
+	Iterator tLeftIt = inLeftIt;
+	Iterator tRightIt = --inRightIt;
+
+	for (Iterator tPivot = inLeftit; ; ++tLeftIt, --tRightIt)
+	{
+		while ((*tLeftIt)->*key < (*tPivot)->*key) { ++tLeftit; }
+		while ((*tPivot)->*key < (*tRightIt)->*key) { --tRightIt; }
+
+		if (i >= j) { break; }
+		std::iter_swap(i, j);
+	}
+	quick_sort(first, i);
+	quick_sort(j + 1, last);
 }
