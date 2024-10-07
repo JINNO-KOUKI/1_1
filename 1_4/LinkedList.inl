@@ -504,6 +504,13 @@ inline bool LinkedList<T>::Clear()
 /// @detail			リストに格納されている要素を、指定したキーに準じて並べ替えます。
 template<typename T>
 template<typename Key>
+
+// 質問内容:	引数keyの型を「Key T::*」にすると、メンバのみに限定はできますが、nullptr指定できなくなります。
+//				また、↓のように
+//				「inline void LinkedList<T>::Sort(const bool& inIsDesc, Key key)」
+//				とすると、すべての要素が指定できるようになってしまうため困っています。
+//				SFINAE（std::enable_if）という、テンプレート引数を限定できるものが存在することを知りましたが、
+//				その利用がふさわしい場面なのか分かりません。
 inline void LinkedList<T>::Sort(const bool& inIsDesc, Key T::* key)
 {
 	// キー指定がnullptrだった場合は、何もせずに終了
