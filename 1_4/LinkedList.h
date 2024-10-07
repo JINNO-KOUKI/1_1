@@ -148,7 +148,52 @@ public:
 		/// @detail			イテレータの指し示すノードと関連付けされたリストのいずれか一つ以上が異なるか判定します
 		bool operator!=(const ConstIterator& other) const noexcept;
 
+		/// @brief			比較演算子
+		/// @param other	右辺要素
+		/// @return			比較結果
+		/// @detail			otherイテレータが左辺より、リストの末尾側要素を指し示していればTRUEを返します。
+		bool operator<(const ConstIterator& other) const;
+
+		/// @brief			比較演算子
+		/// @param other	右辺要素
+		/// @return			比較結果
+		/// @details		otherイテレータが左辺と同一または、\n
+		///					左辺より、リストの末尾側要素を指し示していればTRUEを返します。
+		bool operator<=(const ConstIterator& other) const;
+
+		/// @brief			比較演算子
+		/// @param other	右辺要素
+		/// @return			比較結果
+		/// @detail			otherイテレータが左辺より、リストの先頭側要素を指し示していればTRUEを返します。
+		bool operator>(const ConstIterator& other) const;
+
+		/// @brief			比較演算子
+		/// @param other	右辺要素
+		/// @return			比較結果
+		/// @details		otherイテレータが左辺と同一または、\n
+		///					左辺より、リストの先頭側要素を指し示していればTRUEを返します。
+		bool operator>=(const ConstIterator& other) const;
+
+		/// @brief			減算演算子
+		/// @param other	右辺要素
+		/// @return			イテレータ間の距離
+		/// @details		2つのイテレータ間の距離を求めます。
+		///					例 : a[0] - a[1] = -1,  a[2] - [0] = 2
 		int operator-(const ConstIterator& other) const;
+
+		/// @brief			intとの減算演算子
+		/// @param other	右辺要素(int型) オフセット
+		/// @return			オフセット後のコンストイテレータ
+		/// @details		右辺に指定された値だけ、先頭側にイテレートさせた際のコンストイテレータを返します。\n
+		///					もし、リストをはみ出すほどの値を指定された場合は、LinkedList<T>::ConstEnd()と同等の値が返ります。
+		ConstIterator operator-(const int& other) const;
+
+		/// @brief			intとの加算演算子
+		/// @param other	右辺要素(int型) オフセット
+		/// @return			オフセット後のコンストイテレータ
+		/// @details		右辺に指定された値だけ、末尾側にイテレートさせた際のコンストイテレータを返します。\n
+		///					もし、リストをはみ出すほどの値を指定された場合は、LinkedList<T>::ConstEnd()と同等の値が返ります。
+		ConstIterator operator+(const int& other) const;
 
 	protected:
 		/// @brief イテレータの指しているノード
@@ -226,8 +271,17 @@ public:
 	///				リストが空になるまでRemove(LinkedList::Begin())を呼び出しています。
 	inline bool Clear();
 
+	/// @brief			指定したキーに準じて並べ替える
+	/// @tparam Key		比較に使用するキーの型
+	/// @param inIsDesc 降順にするか(FALSE : 昇順, TRUE : 降順)
+	/// @param key		比較に使用するキー
+	/// @detail			リストに格納されている要素を、指定したキーに準じて並べ替えます。
 	template <typename Key>
-	inline void Sort(const bool& inIsAsc, Key T::* key);
+	inline void Sort(const bool& inIsDesc, Key T::* key);
+
+	/// @brief	要素の格納順を逆順に並べ替える
+	/// @detail	リストに格納されているすべての要素を、現在の逆順に並べ替えます。
+	inline void Reverse();
 
 	/// @brief	先頭のイテレータを取得する
 	/// @return	先頭のイテレータ
@@ -292,8 +346,20 @@ public:
 	inline const ConstIterator& ConstDummy() const noexcept;
 
 private:
-	inline void Swap(Node* pA, Node* pB) noexcept;
+	/// @brief			2つの要素を入れ替える
+	/// @param inItA	Aイテレータ
+	/// @param inItB	Bイテレータ
+	/// @details		AとBそれぞれのイテレータが指す要素同士の、リスト内での格納位置を入れ替えます。\n
+	///					その際、イテレータの指す要素の内容は変わりますが、位置は変わりません。
+	inline void Swap(const Iterator& inItA, const Iterator& inItB) noexcept;
 
+	/// @brief				クイックソート
+	/// @tparam Key			並べ替えに使用するキーの型
+	/// @param inLeftIt		並べ替える範囲の先頭イテレータ
+	/// @param inRightIt	並べ替える範囲の末尾イテレータ
+	/// @param key			並べ替えに使用するキー
+	/// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
+	///						イテレータがEnd()と同一だった場合、Assertが発生します。
 	template <typename Key>
 	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::* key);
 

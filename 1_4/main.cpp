@@ -50,6 +50,9 @@ int main()
 	// ファイルを閉じる
 	ifs.close();
 
+	// 並べ替え処理
+	tResultList.Sort(false, &StudentData::_Score);
+
 	// -- リスト内要素の描画
 	for (auto itr = tResultList.Begin(); itr != tResultList.End(); ++itr)
 	{

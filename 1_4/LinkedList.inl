@@ -232,18 +232,108 @@ inline bool LinkedList<T>::ConstIterator::operator!=(const ConstIterator& other)
 	return !(*this == other);
 }
 
+/// @brief			比較演算子
+/// @param other	右辺要素
+/// @return			比較結果
+/// @detail			otherイテレータが左辺より、リストの末尾側要素を指し示していればTRUEを返します。
+template <typename T>
+bool LinkedList<T>::ConstIterator::operator<(const ConstIterator& other) const
+{
+	return (other - *this) > 0;
+}
+
+/// @brief			比較演算子
+/// @param other	右辺要素
+/// @return			比較結果
+/// @details		otherイテレータが左辺と同一または、\n
+///					左辺より、リストの末尾側要素を指し示していればTRUEを返します。
+template <typename T>
+bool LinkedList<T>::ConstIterator::operator<=(const ConstIterator& other) const
+{
+	return (other - *this) >= 0;
+}
+
+/// @brief			比較演算子
+/// @param other	右辺要素
+/// @return			比較結果
+/// @detail			otherイテレータが左辺より、リストの先頭側要素を指し示していればTRUEを返します。
+template <typename T>
+bool LinkedList<T>::ConstIterator::operator>(const ConstIterator& other) const
+{
+	return (*this - other) > 0;
+}
+
+/// @brief			比較演算子
+/// @param other	右辺要素
+/// @return			比較結果
+/// @details		otherイテレータが左辺と同一または、\n
+///					左辺より、リストの先頭側要素を指し示していればTRUEを返します。
+template <typename T>
+bool LinkedList<T>::ConstIterator::operator>=(const ConstIterator& other) const
+{
+	return (*this - other) >= 0;
+}
+
+/// @brief			減算演算子
+/// @param other	右辺要素
+/// @return			イテレータ間の距離
+/// @details		2つのイテレータ間の距離を求めます。
+///					例 : a[0] - a[1] = -1,  a[2] - [0] = 2
 template <typename T>
 int LinkedList<T>::ConstIterator::operator-(const ConstIterator& other) const
 {
-	unsigned int tRange = 0;
-	for (ConstIterator it = *this; it != End(); ++it)
+	int tRange = 0;
+	ConstIterator tEndIt = this->_List->ConstEnd();
+
+	for (ConstIterator it = *this; it != tEndIt; ++it)
 	{ 
 		if (it == other) { return tRange; }
+		--tRange;
+	}
+	if (other == tEndIt) { return tRange; }
+	tRange = 0;
+	for (ConstIterator it = other; it != tEndIt; ++it)
+	{
+		if (it == *this) { return tRange; }
 		++tRange;
 	}
-	tRange = 0;
-	for(ConstIterator it = other;)
-	return tRange;
+	if (*this == tEndIt) { return tRange; }
+
+	return 0;
+}
+
+/// @brief			intとの減算演算子
+/// @param other	右辺要素(int型) オフセット
+/// @return			オフセット後のコンストイテレータ
+/// @details		右辺に指定された値だけ、先頭側にイテレートさせた際のコンストイテレータを返します。\n
+///					もし、リストをはみ出すほどの値を指定された場合は、LinkedList<T>::ConstEnd()と同等の値が返ります。
+template <typename T>
+typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator-(const int& other) const
+{
+	if (*this - this->_List->ConstBegin() >= other)
+	{
+		ConstIterator tNewCIT = *this;
+		for (int i = 0; i < other; ++i, --tNewCIT) {}
+		return tNewCIT;
+	}
+	else { return this->_List->ConstEnd(); }
+}
+
+/// @brief			intとの加算演算子
+/// @param other	右辺要素(int型) オフセット
+/// @return			オフセット後のコンストイテレータ
+/// @details		右辺に指定された値だけ、末尾側にイテレートさせた際のコンストイテレータを返します。\n
+///					もし、リストをはみ出すほどの値を指定された場合は、LinkedList<T>::ConstEnd()と同等の値が返ります。
+template <typename T>
+typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator+(const int& other) const
+{
+	if (this->_List->ConstEnd() - *this > other)
+	{
+		ConstIterator tNewCIT = *this;
+		for (int i = 0; i < other; ++i, ++tNewCIT) {}
+		return tNewCIT;
+	}
+	else { return this->_List->ConstEnd(); }
 }
 
 // ====================================================================================
@@ -407,11 +497,43 @@ inline bool LinkedList<T>::Clear()
 	return true;
 }
 
+/// @brief			指定したキーに準じて並べ替える
+/// @tparam Key		比較に使用するキーの型
+/// @param inIsDesc 降順にするか(FALSE : 昇順, TRUE : 降順)
+/// @param key		比較に使用するキー
+/// @detail			リストに格納されている要素を、指定したキーに準じて並べ替えます。
 template<typename T>
 template<typename Key>
-inline void LinkedList<T>::Sort(const bool& inIsAsc, Key T::* key)
+inline void LinkedList<T>::Sort(const bool& inIsDesc, Key T::* key)
 {
-	
+	// キー指定がnullptrだった場合は、何もせずに終了
+	if (key == nullptr) { return; }
+	// 並べ替える要素が不足している場合は、何もせずに終了
+	if (_Size <= 1) { return; }
+
+	// クイックソートによる並べ替え開始
+	Iterator tBackIt = End();
+	--tBackIt;
+	QuickSort(Begin(), tBackIt, key);
+
+	// 降順フラグに基づいて、逆順に並べ替え
+	if (inIsDesc) { Reverse(); }
+}
+
+/// @brief	要素の格納順を逆順に並べ替える
+/// @detail	リストに格納されているすべての要素を、現在の逆順に並べ替えます。
+template <typename T>
+inline void LinkedList<T>::Reverse()
+{
+	int tHalfSize = _Size / 2;
+	Iterator tBeginIt = Begin();
+	Iterator tEndIt = End();
+	--tEndIt;
+
+	for (int i = 0; i < tHalfSize; ++i, ++tBeginIt, --tEndIt)
+	{
+		Swap(tBeginIt, tEndIt);
+	}
 }
 
 /// @brief		先頭のイテレータを取得する
@@ -502,36 +624,85 @@ inline const typename LinkedList<T>::Iterator& LinkedList<T>::Dummy() noexcept {
 template <typename T>
 inline const typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstDummy() const noexcept { return _Dummy; }
 
+/// @brief			2つの要素を入れ替える
+/// @param inItA	Aイテレータ
+/// @param inItB	Bイテレータ
+/// @details		AとBそれぞれのイテレータが指す要素同士の、リスト内での格納位置を入れ替えます。\n
+///					その際、イテレータの指す要素の内容は変わりますが、位置は変わりません。
 template <typename T>
-inline void LinkedList<T>::Swap(Node* pA, Node* pB) noexcept
+inline void LinkedList<T>::Swap(const Iterator& inItA, const Iterator& inItB) noexcept
 {
-	Node* tA_Prev = pA->_Prev;
-	Node* tA_Next = pA->_Next;
+	Node* tNodeA = inItA.ConstIterator::_Target;
+	Node* tNodeB = inItB.ConstIterator::_Target;
 
-	pA->_Prev = pB->_Prev;
-	pA->_Next = pB->_Next;
-
-	pB->_Prev = tA_Prev;
-	pB->_Next = tA_Next;
+	// -- ノード内データのスワップ
+	T tData = tNodeA->_Data;
+	tNodeA->_Data = tNodeB->_Data;
+	tNodeB->_Data = tData;
 }
 
+// 参考にしたWebサイトのURL → https://webpia.jp/quick_sort/
+/// @brief				クイックソート
+/// @tparam Key			並べ替えに使用するキーの型
+/// @param inLeftIt		並べ替える範囲の先頭イテレータ
+/// @param inRightIt	並べ替える範囲の末尾イテレータ
+/// @param key			並べ替えに使用するキー
+/// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
+///						イテレータがEnd()と同一だった場合、Assertが発生します。
 template <typename T>
 template <typename Key>
-inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::* key)
+inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::*key)
 {
-	if (inRightIt - inLeftIt <= 1) { return; }
+	// イテレータがEnd()と同一だったら例外を投げる
+	assert(inLeftIt != End());
+	assert(inRightIt != End());
 
+	// 軸要素(ピボット)となる要素の、先頭からのオフセットを計算
+	int tOffsetToCenter = (inRightIt - inLeftIt) / 2;
+
+	// オフセットを先頭イテレータに適用し、ピボットのイテレータを作成
+	Iterator tPivotIt = inLeftIt;
+	for (int i = 0; i < tOffsetToCenter; ++i, ++tPivotIt) {}
+
+	// ピボットイテレータの指す値を保持
+	Key tPivotData = (*tPivotIt).*key;
+
+	// 各端イテレータを一時変数にコピー(ずらしていくため。)
 	Iterator tLeftIt = inLeftIt;
-	Iterator tRightIt = --inRightIt;
+	Iterator tRightIt = inRightIt;
 
-	for (Iterator tPivot = inLeftit; ; ++tLeftIt, --tRightIt)
+	// すべての要素を走査するまで繰り返し
+	while (true)
 	{
-		while ((*tLeftIt)->*key < (*tPivot)->*key) { ++tLeftit; }
-		while ((*tPivot)->*key < (*tRightIt)->*key) { --tRightIt; }
+		// ピボットの値以上の要素が見つかるまで左端イテレータをずらしていく
+		while ((*tLeftIt).*key < tPivotData) { ++tLeftIt; }
+		// ピボットの値以下の要素が見つかるまで右端イテレータをずらしていく
+		while (tPivotData < (*tRightIt).*key) { --tRightIt; }
+		
+		// 各端イテレータが衝突または追い越したら終了
+		if (tLeftIt >= tRightIt) break;
 
-		if (i >= j) { break; }
-		std::iter_swap(i, j);
+		// イテレータの指す要素を入れ替える
+		Swap(tLeftIt, tRightIt);
+
+		// 次の要素から再度走査する
+		++tLeftIt; --tRightIt;
 	}
-	quick_sort(first, i);
-	quick_sort(j + 1, last);
+
+	// -- クイックソートを再帰的に呼び出す
+	// ※	通常であれば次の要素にオフセットさせた上で、
+	//		探索範囲が残っていれば再帰呼び出し判定を行うところだが、
+	//		オフセットさせた先がダミーノードを指していた場合Assartが発生してしまうため、
+	//		オフセット後の値がダミーノードで無いことを確認した上で再帰呼び出し判定を行っている。
+	if(tLeftIt - 1 != ConstEnd())
+	{
+		--tLeftIt;
+		if (inLeftIt < tLeftIt) QuickSort(inLeftIt, tLeftIt, key);
+	}
+	if (tRightIt + 1 != ConstEnd())
+	{
+		++tRightIt;
+		if (inRightIt > tRightIt) QuickSort(tRightIt, inRightIt, key);
+	}
+	
 }
