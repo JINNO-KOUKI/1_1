@@ -513,7 +513,7 @@ inline void LinkedList<T>::Sort(bool (*inComp)(const T& a, const T& b))
 	// クイックソートによる並べ替え開始
 	Iterator tBackIt = End();
 	--tBackIt;
-	QuickSort(Begin(), tBackIt, inComp);
+	QuickSort(Begin(), tBackIt, 0, _Size - 1, inComp);
 }
 
 /// @brief	要素の格納順を逆順に並べ替える
@@ -621,83 +621,85 @@ template <typename T>
 inline const typename LinkedList<T>::ConstIterator& LinkedList<T>::ConstDummy() const noexcept { return _Dummy; }
 
 /// @brief			2つの要素を入れ替える
-/// @param inItA	Aイテレータ
-/// @param inItB	Bイテレータ
+/// @tparam T		格納されているデータ型
+/// @param refItA	Aイテレータ
+/// @param refItB	Bイテレータ
 /// @details		AとBそれぞれのイテレータが指す要素同士の、リスト内での格納位置を入れ替えます。\n
 ///					その際、イテレータの指す要素の内容は変わりますが、位置は変わりません。
 template <typename T>
-inline void LinkedList<T>::Swap(const Iterator& inItA, const Iterator& inItB) noexcept
+inline void LinkedList<T>::Swap(Iterator& refItA, Iterator& refItB) noexcept
 {
-	Node* tNodeA = inItA.ConstIterator::_Target;
-	Node* tNodeB = inItB.ConstIterator::_Target;
-
 	// -- ノード内データのスワップ
-	T tData = tNodeA->_Data;
-	tNodeA->_Data = tNodeB->_Data;
-	tNodeB->_Data = tData;
+	T tData									= std::move(refItA.ConstIterator::_Target->_Data);
+	refItA.ConstIterator::_Target->_Data	= std::move(refItB.ConstIterator::_Target->_Data);
+	refItB.ConstIterator::_Target->_Data	= std::move(tData);
 }
 
-// 参考にしたWebサイトのURL → https://webpia.jp/quick_sort/
+// 参考にしたWebサイトのURL① → https://cod-aid.com/atcoder/algorithm/quick-sort
+// 参考にしたWebサイトのURL② → https://webpia.jp/quick_sort/
 /// @brief				クイックソート
 /// @tparam T			格納されているデータの型
 /// @param inLeftIt		並べ替える範囲の先頭イテレータ
 /// @param inRightIt	並べ替える範囲の末尾イテレータ
+/// @param inLeftidx	先頭要素の添字番号
+/// @param inRightidx	末尾要素の添字番号
 /// @param inComp		並べ替えに使用する関数
 /// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
 ///						イテレータがEnd()と同一だった場合、Assertが発生します。
 template <typename T>
-inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, bool (*inComp)(const T& a, const T& b))
+inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, const int& inLeftIdx, const int& inRightIdx, bool (*inComp)(const T& a, const T& b))
 {
 	// イテレータがEnd()と同一だったら例外を投げる
 	assert(inLeftIt != End());
 	assert(inRightIt != End());
 
-	// 軸要素(ピボット)となる要素の、先頭からのオフセットを計算
-	int tOffsetToCenter = (inRightIt - inLeftIt) / 2;
-
-	// オフセットを先頭イテレータに適用し、ピボットのイテレータを作成
+	// ピボットのイテレータを保持(探索範囲の先頭)
 	Iterator tPivotIt = inLeftIt;
-	for (int i = 0; i < tOffsetToCenter; ++i, ++tPivotIt) {}
-
-	// ピボットイテレータの指す値を保持
-	T tPivotData = *tPivotIt;
 
 	// 各端イテレータを一時変数にコピー(ずらしていくため。)
 	Iterator tLeftIt = inLeftIt;
 	Iterator tRightIt = inRightIt;
 
+	// 擬似的な添字番号を表す一時変数
+	int tLeftIdx = inLeftIdx;
+	int tRightIdx = inRightIdx;
+
+	// -- 一番左の要素はピボットと同等のため、とばす
+	++tLeftIt;
+	++tLeftIdx;
+
 	// すべての要素を走査するまで繰り返し
 	while (true)
 	{
-		// ピボットの値以上の要素が見つかるまで左端イテレータをずらしていく
-		while (inComp(*tLeftIt, tPivotData)) { ++tLeftIt; }
-		// ピボットの値以下の要素が見つかるまで右端イテレータをずらしていく
-		while (inComp(tPivotData, *tRightIt)) { --tRightIt; }
+		// ピボットの値以上の要素が見つかる or 左右イテレータが交差するまで、左端イテレータをずらしていく
+		while (tLeftIdx <= tRightIdx && inComp(*tLeftIt, *tPivotIt)) { ++tLeftIt; ++tLeftIdx; }
+		// ピボットの値以下の要素が見つかる or 左右イテレータが交差するまで、右端イテレータをずらしていく
+		while (tLeftIdx <= tRightIdx && inComp(*tPivotIt, *tRightIt)) { --tRightIt; --tRightIdx; }
 		
 		// 各端イテレータが衝突または追い越したら終了
-		if (tLeftIt >= tRightIt) { break; }
+		if (tLeftIdx >= tRightIdx) { break; }
 
 		// イテレータの指す要素を入れ替える
 		Swap(tLeftIt, tRightIt);
 
-		// 次の要素から再度走査する
-		++tLeftIt; --tRightIt;
+		// -- 次の要素へシーク
+		++tLeftIt;
+		--tRightIt;
+		++tLeftIdx;
+		--tRightIdx;
 	}
 
-	// -- クイックソートを再帰的に呼び出す
-	// ※	通常であれば次の要素にオフセットさせた上で、
-	//		探索範囲が残っていれば再帰呼び出し判定を行うところだが、
-	//		オフセットさせた先がダミーノードを指していた場合Assartが発生してしまうため、
-	//		オフセット後の値がダミーノードで無いことを確認した上で再帰呼び出し判定を行っている。
-	if(tLeftIt - 1 != ConstEnd())
+	// ピボット要素を正しい位置に配置
+	Swap(tPivotIt, tRightIt);
+
+	// -- 左右それぞれに対して、まだ未探索範囲があればクイックソートを再帰的に呼び出す
+	if (tLeftIdx < inRightIdx)
 	{
-		--tLeftIt;
-		if (inLeftIt < tLeftIt) QuickSort(inLeftIt, tLeftIt, inComp);
+		QuickSort(tLeftIt, inRightIt, tLeftIdx, inRightIdx, inComp);
 	}
-	if (tRightIt + 1 != ConstEnd())
+	if (tRightIdx - 1 > inLeftIdx)
 	{
-		++tRightIt;
-		if (inRightIt > tRightIt) QuickSort(tRightIt, inRightIt, inComp);
+		--tRightIt;
+		QuickSort(inLeftIt, tRightIt, inLeftIdx, tRightIdx - 1, inComp);
 	}
-	
 }
