@@ -346,20 +346,22 @@ public:
 
 private:
 	/// @brief			2つの要素を入れ替える
-	/// @param inItA	Aイテレータ
-	/// @param inItB	Bイテレータ
+	/// @param refItA	Aイテレータ
+	/// @param refItB	Bイテレータ
 	/// @details		AとBそれぞれのイテレータが指す要素同士の、リスト内での格納位置を入れ替えます。\n
 	///					その際、イテレータの指す要素の内容は変わりますが、位置は変わりません。
-	inline void Swap(const Iterator& inItA, const Iterator& inItB) noexcept;
+	inline void Swap(Iterator& refItA, Iterator& refItB) noexcept;
 
 	/// @brief				クイックソート
 	/// @tparam T			格納されているデータの型
 	/// @param inLeftIt		並べ替える範囲の先頭イテレータ
 	/// @param inRightIt	並べ替える範囲の末尾イテレータ
+	/// @param inLeftidx	先頭要素の添字番号
+	/// @param inRightidx	末尾要素の添字番号
 	/// @param inComp		並べ替えに使用する関数
 	/// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
 	///						イテレータがEnd()と同一だった場合、Assertが発生します。
-	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, bool (*inComp)(const T& a, const T& b));
+	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, const int& inLeftIdx, const int& inRightIdx, bool (*inComp)(const T& a, const T& b));
 
 private:
 	/// @brief リストの終端を表すノード
