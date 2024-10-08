@@ -271,13 +271,12 @@ public:
 	///				リストが空になるまでRemove(LinkedList::Begin())を呼び出しています。
 	inline bool Clear();
 
-	/// @brief			指定したキーに準じて並べ替える
-	/// @tparam Key		比較に使用するキーの型
-	/// @param inIsDesc 降順にするか(FALSE : 昇順, TRUE : 降順)
-	/// @param key		比較に使用するキー
-	/// @detail			リストに格納されている要素を、指定したキーに準じて並べ替えます。
-	template <typename Key>
-	inline void Sort(const bool& inIsDesc, Key T::* key);
+	/// @brief			指定した比較関数に準じて並べ替える
+	/// @tparam T		格納されているデータの型
+	/// @param inComp	比較に使用する関数
+	/// @details		リストに格納されている要素を、指定した比較関数の結果に準じて並べ替えます。\n
+	///					比較関数を渡さない場合、何もせずに終了します。
+	inline void Sort(bool (*inComp)(const T&, const T&));
 
 	/// @brief	要素の格納順を逆順に並べ替える
 	/// @detail	リストに格納されているすべての要素を、現在の逆順に並べ替えます。
@@ -354,14 +353,13 @@ private:
 	inline void Swap(const Iterator& inItA, const Iterator& inItB) noexcept;
 
 	/// @brief				クイックソート
-	/// @tparam Key			並べ替えに使用するキーの型
+	/// @tparam T			格納されているデータの型
 	/// @param inLeftIt		並べ替える範囲の先頭イテレータ
 	/// @param inRightIt	並べ替える範囲の末尾イテレータ
-	/// @param key			並べ替えに使用するキー
+	/// @param inComp		並べ替えに使用する関数
 	/// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
 	///						イテレータがEnd()と同一だった場合、Assertが発生します。
-	template <typename Key>
-	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::* key);
+	inline void QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, bool (*inComp)(const T& a, const T& b));
 
 private:
 	/// @brief リストの終端を表すノード

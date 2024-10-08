@@ -37,7 +37,7 @@ namespace ex01_DataStructure
 				int value;
 			};
 			LinkedList<UserData> list;
-			list.Sort(false, &int);	// ここでエラー
+			list.Sort([](const Dummy& a, const Dummy& b) {return a.value < b.value; });	// ここでエラー
 #endif //TT_TEST_SORT_BY_FRAUD_KEY
 			SUCCEED();
 		}
@@ -59,7 +59,7 @@ namespace ex01_DataStructure
 				float _Stature;
 			};
 			const LinkedList<UserData> list;
-			list.Sort(false, &UserData::_Age);
+			list.Sort(false, &UserData::_Age);	// ここでエラー
 #endif //TT_TEST_SORT_IS_CONST
 			SUCCEED();
 		}

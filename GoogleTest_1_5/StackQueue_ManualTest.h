@@ -10,12 +10,23 @@
 //--------------------------------------------------------------------------------
 // コンパイル関連手動テスト(リスト)
 
-// ※コンパイルが通らなければ成功
-//#define TT_TEST_SORT_BY_FRAUD_KEY
+// ※コンパイルが通れば成功
+#define TT_TEST_STACK_GET_DATA_NUM_IS_CONST
 
 // ※コンパイルが通らなければ成功
-//#define TT_TEST_SORT_IS_CONST
+//#define TT_TEST_STACK_PUSH_IS_NOT_CONST
 
+// ※コンパイルが通らなければ成功
+//#define TT_TEST_STACK_POP_IS_NOT_CONST
+
+// ※コンパイルが通れば成功
+#define TT_TEST_QUEUE_GET_DATA_NUM_IS_CONST
+
+// ※コンパイルが通らなければ成功
+//#define TT_TEST_QUEUE_PUSH_IS_NOT_CONST
+
+// ※コンパイルが通らなければ成功
+//#define TT_TEST_QUEUE_POP_IS_NOT_CONST
 
 
 #endif // ___TECHTRAINING_CHAPTER4_LIST_MANUAL_TEST___

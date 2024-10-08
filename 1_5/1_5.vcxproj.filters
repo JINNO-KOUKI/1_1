@@ -29,5 +29,11 @@
     <None Include="LinkedList.inl">
       <Filter>ヘッダー ファイル</Filter>
     </None>
+    <None Include="Queue.inl">
+      <Filter>ヘッダー ファイル</Filter>
+    </None>
+    <None Include="Stack.inl">
+      <Filter>ヘッダー ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

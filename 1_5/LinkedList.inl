@@ -497,34 +497,23 @@ inline bool LinkedList<T>::Clear()
 	return true;
 }
 
-/// @brief			指定したキーに準じて並べ替える
-/// @tparam Key		比較に使用するキーの型
-/// @param inIsDesc 降順にするか(FALSE : 昇順, TRUE : 降順)
-/// @param key		比較に使用するキー
-/// @detail			リストに格納されている要素を、指定したキーに準じて並べ替えます。
+/// @brief			指定した比較関数に準じて並べ替える
+/// @tparam T		格納されているデータの型
+/// @param inComp	比較に使用する関数
+/// @details		リストに格納されている要素を、指定した比較関数の結果に準じて並べ替えます。\n
+///					比較関数を渡さない場合、何もせずに終了します。
 template<typename T>
-template<typename Key>
-
-// 質問内容:	引数keyの型を「Key T::*」にすると、メンバのみに限定はできますが、nullptr指定できなくなります。
-//				また、↓のように
-//				「inline void LinkedList<T>::Sort(const bool& inIsDesc, Key key)」
-//				とすると、すべての要素が指定できるようになってしまうため困っています。
-//				SFINAE（std::enable_if）という、テンプレート引数を限定できるものが存在することを知りましたが、
-//				その利用がふさわしい場面なのか分かりません。
-inline void LinkedList<T>::Sort(const bool& inIsDesc, Key T::* key)
+inline void LinkedList<T>::Sort(bool (*inComp)(const T& a, const T& b))
 {
 	// キー指定がnullptrだった場合は、何もせずに終了
-	if (key == nullptr) { return; }
+	if (inComp == nullptr) { return; }
 	// 並べ替える要素が不足している場合は、何もせずに終了
 	if (_Size <= 1) { return; }
 
 	// クイックソートによる並べ替え開始
 	Iterator tBackIt = End();
 	--tBackIt;
-	QuickSort(Begin(), tBackIt, key);
-
-	// 降順フラグに基づいて、逆順に並べ替え
-	if (inIsDesc) { Reverse(); }
+	QuickSort(Begin(), tBackIt, inComp);
 }
 
 /// @brief	要素の格納順を逆順に並べ替える
@@ -650,15 +639,14 @@ inline void LinkedList<T>::Swap(const Iterator& inItA, const Iterator& inItB) no
 
 // 参考にしたWebサイトのURL → https://webpia.jp/quick_sort/
 /// @brief				クイックソート
-/// @tparam Key			並べ替えに使用するキーの型
+/// @tparam T			格納されているデータの型
 /// @param inLeftIt		並べ替える範囲の先頭イテレータ
 /// @param inRightIt	並べ替える範囲の末尾イテレータ
-/// @param key			並べ替えに使用するキー
+/// @param inComp		並べ替えに使用する関数
 /// @details			クイックソートアルゴリズムを用いて、要素を昇順に並べ替えます。\n
 ///						イテレータがEnd()と同一だった場合、Assertが発生します。
 template <typename T>
-template <typename Key>
-inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, Key T::*key)
+inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& inRightIt, bool (*inComp)(const T& a, const T& b))
 {
 	// イテレータがEnd()と同一だったら例外を投げる
 	assert(inLeftIt != End());
@@ -672,7 +660,7 @@ inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& i
 	for (int i = 0; i < tOffsetToCenter; ++i, ++tPivotIt) {}
 
 	// ピボットイテレータの指す値を保持
-	Key tPivotData = (*tPivotIt).*key;
+	T tPivotData = *tPivotIt;
 
 	// 各端イテレータを一時変数にコピー(ずらしていくため。)
 	Iterator tLeftIt = inLeftIt;
@@ -682,12 +670,12 @@ inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& i
 	while (true)
 	{
 		// ピボットの値以上の要素が見つかるまで左端イテレータをずらしていく
-		while ((*tLeftIt).*key < tPivotData) { ++tLeftIt; }
+		while (inComp(*tLeftIt, tPivotData)) { ++tLeftIt; }
 		// ピボットの値以下の要素が見つかるまで右端イテレータをずらしていく
-		while (tPivotData < (*tRightIt).*key) { --tRightIt; }
+		while (inComp(tPivotData, *tRightIt)) { --tRightIt; }
 		
 		// 各端イテレータが衝突または追い越したら終了
-		if (tLeftIt >= tRightIt) break;
+		if (tLeftIt >= tRightIt) { break; }
 
 		// イテレータの指す要素を入れ替える
 		Swap(tLeftIt, tRightIt);
@@ -704,12 +692,12 @@ inline void LinkedList<T>::QuickSort(const Iterator& inLeftIt, const Iterator& i
 	if(tLeftIt - 1 != ConstEnd())
 	{
 		--tLeftIt;
-		if (inLeftIt < tLeftIt) QuickSort(inLeftIt, tLeftIt, key);
+		if (inLeftIt < tLeftIt) QuickSort(inLeftIt, tLeftIt, inComp);
 	}
 	if (tRightIt + 1 != ConstEnd())
 	{
 		++tRightIt;
-		if (inRightIt > tRightIt) QuickSort(tRightIt, inRightIt, key);
+		if (inRightIt > tRightIt) QuickSort(tRightIt, inRightIt, inComp);
 	}
 	
 }

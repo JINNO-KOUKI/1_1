@@ -12,59 +12,121 @@
 
 namespace ex01_DataStructure
 {
-	namespace chapter4
+	namespace chapter5
 	{
 		//--------------------------------------------------------------------------------
 		// コンパイル関連手動テスト
 		//--------------------------------------------------------------------------------
 		/**********************************************************************************//**
-			@brief		データのソート機能について、不適切なキー指定ができないかのテスト
-			@details	ID:リスト-7(手動)\n
-						データのソート機能のテストです。\n
-						不適切なキー指定が禁止されているかを確認しています。\n
-						有効にしてコンパイルが通らなければ成功です。\n
-						TT_TEST_SORT_BY_FRAUD_KEYマクロを定義すると有効になります。\n
+			@brief		スタックのサイズ取得機能について、constのメソッドであるかのテスト
+			@details	ID:スタック-7(手動)\n
+						スタックのサイズ取得機能のテストです。\n
+						constのメソッドであるかを確認しています。\n
+						有効にしてコンパイルが通れば成功です。\n
+						TT_TEST_STACK_GET_DATA_NUM_IS_CONSTマクロを定義すると有効になります。\n
 		*//***********************************************************************************/
-		TEST(ListManualTest, TestSortByFraudKey)
+		TEST(StackQueueManualTest, TestStackGetDataNumIsConst)
 		{
-#if defined TT_TEST_SORT_BY_FRAUD_KEY
-			struct UserData
-			{
-				int _Age;
-				float _Stature;
-			};
-			struct Dummy
-			{
-				int value;
-			};
-			LinkedList<UserData> list;
-			list.Sort(false, &int);	// ここでエラー
-#endif //TT_TEST_SORT_BY_FRAUD_KEY
+#if defined TT_TEST_STACK_GET_DATA_NUM_IS_CONST
+
+			const Stack<int> stack;
+			stack.Size();
+#endif //TT_TEST_STACK_GET_DATA_NUM_IS_CONST
 			SUCCEED();
 		}
 
 		/**********************************************************************************//**
-			@brief		データのソート機能について、constのメソッドであるかのテスト
-			@details	ID:リスト-8(手動)\n
-						データのソート機能のテストです。\n
-						constのメソッドであるかを確認しています。\n
+			@brief		スタックのプッシュ機能について、非constのメソッドであるかのテスト
+			@details	ID:スタック-10(手動)\n
+						スタックのプッシュ機能のテストです。\n
+						非constのメソッドであるかを確認しています。\n
 						有効にしてコンパイルが通らなければ成功です。\n
-						TT_TEST_SORT_IS_CONSTマクロを定義すると有効になります。\n
+						TT_TEST_STACK_PUSH_IS_NOT_CONSTマクロを定義すると有効になります。\n
 		*//***********************************************************************************/
-		TEST(ListManualTest, TestSortIsConst)
+		TEST(StackQueueManualTest, TestStackPushIsNotConst)
 		{
-#if defined TT_TEST_SORT_IS_CONST
-			struct UserData
-			{
-				int _Age;
-				float _Stature;
-			};
-			const LinkedList<UserData> list;
-			list.Sort(false, &UserData::_Age);
-#endif //TT_TEST_SORT_IS_CONST
+#if defined TT_TEST_STACK_PUSH_IS_NOT_CONST
+
+			const Stack<int> stack;
+			stack.Push(1);	// ここでエラー
+#endif //TT_TEST_STACK_PUSH_IS_NOT_CONST
+			SUCCEED();
+		}
+
+		/**********************************************************************************//**
+			@brief		スタックのポップ機能について、非constのメソッドであるかのテスト
+			@details	ID:スタック-14(手動)\n
+						スタックのポップ機能のテストです。\n
+						非constのメソッドであるかを確認しています。\n
+						有効にしてコンパイルが通らなければ成功です。\n
+						TT_TEST_STACK_POP_IS_NOT_CONSTマクロを定義すると有効になります。\n
+		*//***********************************************************************************/
+		TEST(StackQueueManualTest, TestStackPopIsNotConst)
+		{
+#if defined TT_TEST_STACK_POP_IS_NOT_CONST
+
+			const Stack<int> stack;
+			int tValue;
+			stack.Pop(tValue);	// ここでエラー
+#endif //TT_TEST_STACK_POP_IS_NOT_CONST
+			SUCCEED();
+		}
+
+		/**********************************************************************************//**
+			@brief		キューのサイズ取得機能について、constのメソッドであるかのテスト
+			@details	ID:キュー-7(手動)\n
+						キューのサイズ取得機能のテストです。\n
+						constのメソッドであるかを確認しています。\n
+						有効にしてコンパイルが通れば成功です。\n
+						TT_TEST_QUEUE_GET_DATA_NUM_IS_CONSTマクロを定義すると有効になります。\n
+		*//***********************************************************************************/
+		TEST(StackQueueManualTest, TestQueueGetDataNumIsConst)
+		{
+#if defined TT_TEST_QUEUE_GET_DATA_NUM_IS_CONST
+
+			const Queue<int> queue;
+			queue.Size();
+#endif //TT_TEST_QUEUE_GET_DATA_NUM_IS_CONST
+			SUCCEED();
+		}
+
+		/**********************************************************************************//**
+			@brief		キューのプッシュ機能について、非constのメソッドであるかのテスト
+			@details	ID:キュー-10(手動)\n
+						キューのプッシュ機能のテストです。\n
+						非constのメソッドであるかを確認しています。\n
+						有効にしてコンパイルが通らなければ成功です。\n
+						TT_TEST_QUEUE_PUSH_IS_NOT_CONSTマクロを定義すると有効になります。\n
+		*//***********************************************************************************/
+		TEST(StackQueueManualTest, TestQueuePushIsNotConst)
+		{
+#if defined TT_TEST_QUEUE_PUSH_IS_NOT_CONST
+
+			const Queue<int> queue;
+			queue.Push(1);	// ここでエラー
+#endif //TT_TEST_QUEUE_PUSH_IS_NOT_CONST
+			SUCCEED();
+		}
+
+		/**********************************************************************************//**
+			@brief		キューのポップ機能について、非constのメソッドであるかのテスト
+			@details	ID:キュー-14(手動)\n
+						キューのポップ機能のテストです。\n
+						非constのメソッドであるかを確認しています。\n
+						有効にしてコンパイルが通らなければ成功です。\n
+						TT_TEST_QUEUE_POP_IS_NOT_CONSTマクロを定義すると有効になります。\n
+		*//***********************************************************************************/
+		TEST(StackQueueManualTest, TestQueuePopIsNotConst)
+		{
+#if defined TT_TEST_QUEUE_POP_IS_NOT_CONST
+
+			const Queue<int> queue;
+			int tValue;
+			queue.Pop(tValue);	// ここでエラー
+#endif //TT_TEST_QUEUE_POP_IS_NOT_CONST
 			SUCCEED();
 		}
 
 
-	}	// chapter4
+	}	// chapter5
 }	//	ex01_DataStructure

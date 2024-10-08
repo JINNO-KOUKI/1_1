@@ -51,7 +51,7 @@ int main()
 	ifs.close();
 
 	// •À‚×‘Ö‚¦ˆ—
-	tResultList.Sort(false, &StudentData::_Score);
+	tResultList.Sort([](const StudentData& a, const StudentData& b) {return a._Score < b._Score; });
 
 	// -- ƒŠƒXƒg“à—v‘f‚Ì•`‰æ
 	for (auto itr = tResultList.Begin(); itr != tResultList.End(); ++itr)

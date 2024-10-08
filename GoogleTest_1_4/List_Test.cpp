@@ -4,11 +4,32 @@
 // 自身のリスト
 #include "../1_4/LinkedList.h"
 
+// -- 比較に使用する関数オブジェクト
+#define COMP_AGE_ASC		[](const UserData& a, const UserData& b) {return a._Age < b._Age; } 
+#define COMP_AGE_DESC		[](const UserData& a, const UserData& b) {return a._Age > b._Age; }
+#define COMP_STATURE_ASC	[](const UserData& a, const UserData& b) {return a._Stature < b._Stature; }
+#define COMP_STATURE_DESC	[](const UserData& a, const UserData& b) {return a._Stature > b._Stature; }
 
 namespace ex01_DataStructure
 {
 	namespace chapter4
 	{
+		/// @brief テストに利用する構造体
+		struct UserData
+		{
+			int		_Age;
+			float	_Stature;
+
+			UserData() : _Age(0), _Stature(0.0f) {}
+
+			UserData(int age, float stature)
+				: _Age(age), _Stature(stature) {}
+
+			bool operator==(const UserData& other) const
+			{
+				return this->_Age == other._Age && this->_Stature == other._Stature;
+			}
+		};
 
 		//=================================== クイックソート ===================================
 
@@ -21,20 +42,16 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenEmpty) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				bool operator==(const UserData& other) const
-				{
-					return this->_Age == other._Age && this->_Stature == other._Stature;
-				}
-			};
 			LinkedList<UserData> list;
 
-			EXPECT_NO_THROW(list.Sort(false, &UserData::_Age));
-			EXPECT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// -- 並べ替え実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 普遍テスト
+			EXPECT_EQ(0, list.Size()) << "想定しているサイズと異なる(リストに予期しない変更が発生している)";
 		}
 
 		/**********************************************************************************//**
@@ -46,17 +63,20 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenOnce) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-			};
 			LinkedList<UserData> list;
 			
-			ASSERT_TRUE(list.Insert(list.End(), UserData())) << "初期要素の挿入に失敗";
+			// -- 初期準備
+			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 10.0f))) << "初期要素の挿入に失敗";
 
-			EXPECT_NO_THROW(list.Sort(false, &UserData::_Age));
-			EXPECT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// -- 並べ替え実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 普遍テスト
+			EXPECT_EQ(1, list.Size()) << "想定しているサイズと異なる(リストに予期しない変更が発生している)";
+			EXPECT_EQ(UserData(1, 10.0f), *(list.Begin())) << "想定している要素と異なる(リストに予期しない変更が発生している)";
 		}
 
 		/**********************************************************************************//**
@@ -68,46 +88,65 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenMulti) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				UserData() : _Age(0), _Stature(0.0f) {}
-				
-				UserData(int age, float stature)
-					: _Age(age), _Stature(stature) {}
-
-				bool operator==(const UserData& other) const
-				{
-					return this->_Age == other._Age && this->_Stature == other._Stature;
-				}
-			};
 			LinkedList<UserData> list;
 			
+			// -- 初期準備
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 30.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 10.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 20.0f))) << "初期要素の挿入に失敗";
 
-			// --- Ageに対するソートテスト
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Age));
+			// ======== Ageに対する昇順ソートテスト ========
 
-			LinkedList<UserData>::ConstIterator it = list.Begin();
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
+
+			// -- 順序確認
+			LinkedList<UserData>::ConstIterator it = list.ConstBegin();
 			EXPECT_EQ(UserData(1, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(3, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
 			
-			// --- Statureに対するソートテスト
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// ======== Ageに対する降順ソートテスト ========
 
-			it = list.Begin();
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(3, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(1, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// ======== Statureに対する昇順ソートテスト ========
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
 			EXPECT_EQ(UserData(1, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(3, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// ======== Statureに対する降順ソートテスト ========
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(3, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(1, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+
 		}
 
 		/**********************************************************************************//**
@@ -119,46 +158,65 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenEqualElem) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				UserData() : _Age(0), _Stature(0.0f) {}
-				
-				UserData(int age, float stature)
-					: _Age(age), _Stature(stature) {}
-
-				bool operator==(const UserData& other) const
-				{
-					return this->_Age == other._Age && this->_Stature == other._Stature;
-				}
-			};
 			LinkedList<UserData> list;
 			
+			// -- 初期準備
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 30.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 10.0f))) << "初期要素の挿入に失敗";
 
-			// --- Ageに対するソートテスト
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Age));
+			// ======== Ageに対する昇順ソートテスト ========
 
-			LinkedList<UserData>::ConstIterator it = list.Begin();
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
+
+			// -- 順序確認
+			LinkedList<UserData>::ConstIterator it = list.ConstBegin();
 			EXPECT_TRUE((UserData(2, 30.0f) == *it) || (UserData(2, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_TRUE((UserData(2, 30.0f) == *it) || (UserData(2, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 
-			// --- Statureに対するソートテスト
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// ======== Ageに対する降順ソートテスト ========
 
-			it = list.Begin();
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_TRUE((UserData(2, 30.0f) == *it) || (UserData(2, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_TRUE((UserData(2, 30.0f) == *it) || (UserData(2, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
+
+			// ======== Statureに対する昇順ソートテスト ========
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
 			EXPECT_TRUE((UserData(2, 10.0f) == *it) || (UserData(3, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_TRUE((UserData(2, 10.0f) == *it) || (UserData(3, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// ======== Statureに対する降順ソートテスト ========
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(2, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_TRUE((UserData(2, 10.0f) == *it) || (UserData(3, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_TRUE((UserData(2, 10.0f) == *it) || (UserData(3, 10.0f) == *it)) << "リスト要素が想定されている順序になっていない";
+
 		}
 
 		/**********************************************************************************//**
@@ -170,52 +228,89 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenFinishedSort) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				UserData() : _Age(0), _Stature(0.0f) {}
-
-				UserData(int age, float stature)
-					: _Age(age), _Stature(stature) {}
-
-				bool operator==(const UserData& other) const
-				{
-					return this->_Age == other._Age && this->_Stature == other._Stature;
-				}
-			};
 			LinkedList<UserData> list;
 			
-			// --- Ageに対するソートテスト
+			// ======== Ageに対する昇順ソートテスト ========
+
+			// -- 初期要素の挿入
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
 
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Age));
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
 
-			LinkedList<UserData>::ConstIterator it = list.Begin();
+			// -- 順序確認
+			LinkedList<UserData>::ConstIterator it = list.ConstBegin();
 			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 
+			// リストの初期化
 			ASSERT_TRUE(list.Clear());
 
-			// --- Statureに対するソートテスト
+			// ======== Ageに対する降順ソートテスト ========
+
+			// -- 初期要素の挿入
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
 
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
 
-			it = list.Begin();
+			// -- 順序確認
+			it = list.ConstBegin();
 			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// リストの初期化
+			ASSERT_TRUE(list.Clear());
+
+			// ======== Statureに対する昇順ソートテスト ========
+
+			// -- 初期要素の挿入
+			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// リストの初期化
+			ASSERT_TRUE(list.Clear());
+
+			// ======== Statureに対する降順ソートテスト ========
+
+			// -- 初期要素の挿入
+			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+
 		}
 
 		/**********************************************************************************//**
@@ -227,38 +322,28 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenAfterInsert) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				UserData() : _Age(0), _Stature(0.0f) {}
-				
-				UserData(int age, float stature)
-					: _Age(age), _Stature(stature) {}
-
-				bool operator==(const UserData& other) const
-				{
-					return this->_Age == other._Age && this->_Stature == other._Stature;
-				}
-			};
 			LinkedList<UserData> list;
 
-			// --- Ageに対するソートテスト
+			// ======== Ageに対する昇順ソートテスト ========
+
+			// -- 初期要素の挿入
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
 
-			LinkedList<UserData>::ConstIterator it = list.Begin();
+			// -- 中間への要素挿入
+			LinkedList<UserData>::ConstIterator it = list.ConstBegin();
 			++it;
 			ASSERT_TRUE(list.Insert(list.End(), UserData(4, 50.0f))) << "追加要素の挿入に失敗";
 			it = list.End();
 			--it;
 			ASSERT_TRUE(list.Insert(list.End(), UserData(5, 40.0f))) << "追加要素の挿入に失敗";
 
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Age));
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_ASC));
 
-			it = list.Begin();
+			// -- 順序確認
+			it = list.ConstBegin();
 			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
@@ -269,23 +354,62 @@ namespace ex01_DataStructure
 			++it;
 			EXPECT_EQ(UserData(5, 40.0f), *it) << "リスト要素が想定されている順序になっていない";
 
+			// リストの初期化
 			ASSERT_TRUE(list.Clear());
 
-			// --- Statureに対するソートテスト
+			// ======== Ageに対する降順ソートテスト ========
+
+			// -- 初期要素の挿入
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
 
-			it = list.Begin();
+			// -- 中間への要素挿入
+			it = list.ConstBegin();
 			++it;
 			ASSERT_TRUE(list.Insert(list.End(), UserData(4, 50.0f))) << "追加要素の挿入に失敗";
 			it = list.End();
 			--it;
 			ASSERT_TRUE(list.Insert(list.End(), UserData(5, 40.0f))) << "追加要素の挿入に失敗";
 
-			ASSERT_NO_THROW(list.Sort(false, &UserData::_Stature));
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_AGE_DESC));
 
-			it = list.Begin();
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(5, 40.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(4, 50.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// リストの初期化
+			ASSERT_TRUE(list.Clear());
+
+			// ======== Statureに対する昇順ソートテスト ========
+
+			// -- 初期要素の挿入
+			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
+
+			// -- 中間への要素挿入
+			it = list.ConstBegin();
+			++it;
+			ASSERT_TRUE(list.Insert(list.End(), UserData(4, 50.0f))) << "追加要素の挿入に失敗";
+			it = list.End();
+			--it;
+			ASSERT_TRUE(list.Insert(list.End(), UserData(5, 40.0f))) << "追加要素の挿入に失敗";
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_ASC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
 			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
@@ -295,6 +419,39 @@ namespace ex01_DataStructure
 			EXPECT_EQ(UserData(5, 40.0f), *it) << "リスト要素が想定されている順序になっていない";
 			++it;
 			EXPECT_EQ(UserData(4, 50.0f), *it) << "リスト要素が想定されている順序になっていない";
+
+			// リストの初期化
+			ASSERT_TRUE(list.Clear());
+
+			// ======== Statureに対する降順ソートテスト ========
+
+			// -- 初期要素の挿入
+			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 20.0f))) << "初期要素の挿入に失敗";
+			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 10.0f))) << "初期要素の挿入に失敗";
+
+			// -- 中間への要素挿入
+			it = list.ConstBegin();
+			++it;
+			ASSERT_TRUE(list.Insert(list.End(), UserData(4, 50.0f))) << "追加要素の挿入に失敗";
+			it = list.End();
+			--it;
+			ASSERT_TRUE(list.Insert(list.End(), UserData(5, 40.0f))) << "追加要素の挿入に失敗";
+
+			// ソート実行
+			ASSERT_NO_THROW(list.Sort(COMP_STATURE_DESC));
+
+			// -- 順序確認
+			it = list.ConstBegin();
+			EXPECT_EQ(UserData(4, 50.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(5, 40.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(3, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 		}
 
 		/**********************************************************************************//**
@@ -306,24 +463,23 @@ namespace ex01_DataStructure
 		*//***********************************************************************************/
 		TEST(DataSortTest, TestSortWhenNullKey) {
 
-			struct UserData
-			{
-				int		_Age;
-				float	_Stature;
-
-				UserData() : _Age(0), _Stature(0.0f) {}
-				
-				UserData(int age, float stature)
-					: _Age(age), _Stature(stature) {}
-			};
 			LinkedList<UserData> list;
 			
+			// -- 初期要素の挿入
 			ASSERT_TRUE(list.Insert(list.End(), UserData(1, 30.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(3, 20.0f))) << "初期要素の挿入に失敗";
 			ASSERT_TRUE(list.Insert(list.End(), UserData(2, 10.0f))) << "初期要素の挿入に失敗";
 
-			// 質問した内容に該当する箇所のため、一時的にコメントアウトしています。
-			//EXPECT_DEATH(list.Sort(false, nullptr), "Assertion failed. *");
+			// -- ソート実行
+			EXPECT_NO_THROW(list.Sort(nullptr));
+
+			// -- 普遍テスト
+			LinkedList<UserData>::ConstIterator it = list.ConstBegin();
+			EXPECT_EQ(UserData(1, 30.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(3, 20.0f), *it) << "リスト要素が想定されている順序になっていない";
+			++it;
+			EXPECT_EQ(UserData(2, 10.0f), *it) << "リスト要素が想定されている順序になっていない";
 		}
 
 	}

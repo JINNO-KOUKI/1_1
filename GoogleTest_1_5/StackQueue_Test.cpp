@@ -10,23 +10,6 @@ namespace ex01_DataStructure
 {
 	namespace chapter5
 	{
-		/// @brief テストに使用する、格納要素
-		struct UserData
-		{
-			int		_Age;
-			float	_Stature;
-
-			UserData() : _Age(0), _Stature(0.0f) {}
-
-			UserData(int age, float stature)
-				: _Age(age), _Stature(stature) {}
-
-			bool operator==(const UserData& other) const
-			{
-				return this->_Age == other._Age && this->_Stature == other._Stature;
-			}
-		};
-
 		//=================================== スタック - データ数の取得 ===================================
 		namespace stack_GetDataNumTest
 		{
@@ -39,8 +22,9 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumWhenEmpty) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
+				// サイズ取得テスト
 				EXPECT_EQ(0, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -53,10 +37,12 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterPush) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
+				// 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
 
+				// サイズ取得テスト
 				EXPECT_EQ(1, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -69,13 +55,16 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterPop) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
+				// 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
 
-				UserData tUserData;
-				ASSERT_TRUE(stack.Pop(tUserData)) << "要素のポップに失敗";
+				// 格納要素のポップ
+				int tValue;
+				ASSERT_TRUE(stack.Pop(tValue)) << "要素のポップに失敗";
 
+				// サイズ取得テスト
 				EXPECT_EQ(0, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -88,11 +77,15 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterPushFailed) {
 
-				Stack<UserData> stack;
+#if 0		// 要素のプッシュに失敗する条件が、「メモリ確保の失敗」しかないためスキップ
+				Stack<int> stack;
 
-				ASSERT_FALSE(stack.Push(UserData(1, 10.0f))) << "失敗するはずのプッシュに成功してしまった";
+				// 初期要素のプッシュ(失敗想定)
+				ASSERT_FALSE(stack.Push(1)) << "失敗するはずのプッシュに成功してしまった";
 
+				// サイズ取得テスト
 				EXPECT_EQ(0, stack.Size()) << "想定しているサイズと異なる";
+#endif
 			}
 
 			/**********************************************************************************//**
@@ -104,11 +97,13 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterTwoPush) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
-				ASSERT_TRUE(stack.Push(UserData(2, 20.0f))) << "初期要素の追加に失敗";
+				// -- 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
+				ASSERT_TRUE(stack.Push(2)) << "初期要素の追加に失敗";
 
+				// サイズ取得テスト
 				EXPECT_EQ(2, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -121,14 +116,17 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterTwoPushAndOnePop) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
-				ASSERT_TRUE(stack.Push(UserData(2, 20.0f))) << "初期要素の追加に失敗";
+				// 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
+				ASSERT_TRUE(stack.Push(2)) << "初期要素の追加に失敗";
 				
-				UserData tUserData;
-				ASSERT_TRUE(stack.Pop(tUserData)) << "初期要素のポップに失敗";
+				// 格納要素のポップ
+				int tValue;
+				ASSERT_TRUE(stack.Pop(tValue)) << "初期要素のポップに失敗";
 
+				// サイズ取得テスト
 				EXPECT_EQ(1, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -141,11 +139,13 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackGetDataNumTest, TestGetDataNumAfterPopEmpty) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				UserData tUserData;
-				ASSERT_FALSE(stack.Pop(tUserData)) << "失敗するはずのポップに成功してしまった";
+				// 格納要素のポップ(失敗想定)
+				int tValue;
+				ASSERT_FALSE(stack.Pop(tValue)) << "失敗するはずのポップに成功してしまった";
 
+				// サイズの取得テスト
 				EXPECT_EQ(0, stack.Size()) << "想定しているサイズと異なる";
 			}
 
@@ -163,10 +163,13 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackPushTest, TestPushWhenEmpty) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "要素の追加に失敗";
-				EXPECT_EQ(1, stack.Size()) << "追加されたはずの要素が正常に追加できていない";
+				// 要素のプッシュテスト
+				ASSERT_TRUE(stack.Push(1)) << "要素の追加に失敗";
+
+				// 確認テスト
+				EXPECT_EQ(1, stack.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -178,17 +181,19 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackPushTest, TestPushWhenMultiElem) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
-				ASSERT_TRUE(stack.Push(UserData(2, 20.0f))) << "初期要素の追加に失敗";
+				// -- 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
+				ASSERT_TRUE(stack.Push(2)) << "初期要素の追加に失敗";
 
-				ASSERT_TRUE(stack.Push(UserData(3, 30.0f))) << "複数要素がある状態での、要素の追加に失敗";
+				// 複数要素を持つリストへのプッシュテスト
+				ASSERT_TRUE(stack.Push(3)) << "複数要素がある状態での、要素の追加に失敗";
 
-				UserData tUserData;
-				ASSERT_TRUE(stack.Pop(tUserData)) << "要素のポップに失敗";
-
-				EXPECT_EQ(UserData(3, 30.0f), tUserData) << "リストの末尾に対して、要素を正常にプッシュできていなかった";
+				// -- 確認テスト(末尾のデータとの比較)
+				int tValue;
+				ASSERT_TRUE(stack.Pop(tValue)) << "要素のポップに失敗";
+				EXPECT_EQ(3, tValue) << "リストの末尾に対して、要素を正常にプッシュできていなかった";
 
 			}
 
@@ -206,10 +211,11 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackPopTest, TestPopWhenEmpty) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				UserData tUserData;
-				EXPECT_FALSE(stack.Pop(tUserData)) << "失敗するはずのポップに成功してしまった";
+				// リストが空の状態でのポップテスト(失敗想定)
+				int tValue;
+				EXPECT_FALSE(stack.Pop(tValue)) << "失敗するはずのポップに成功してしまった";
 			}
 
 			/**********************************************************************************//**
@@ -221,14 +227,18 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackPopTest, TestPopWhenMultiElem) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
-				ASSERT_TRUE(stack.Push(UserData(2, 20.0f))) << "初期要素の追加に失敗";
+				// -- 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
+				ASSERT_TRUE(stack.Push(2)) << "初期要素の追加に失敗";
 
-				UserData tUserData;
-				ASSERT_TRUE(stack.Pop(tUserData)) << "要素のポップに失敗";
-				EXPECT_EQ(UserData(2, 20.0f), tUserData) << "ポップされた要素が、想定しているものと異なる";
+				// -- 格納要素のポップテスト
+				int tValue;
+				ASSERT_TRUE(stack.Pop(tValue)) << "要素のポップに失敗";
+
+				// -- 確認テスト(末尾のデータであるか&サイズが正常に変動しているか)
+				EXPECT_EQ(2, tValue) << "末尾のデータを正常に取得できていない";
 				EXPECT_EQ(1, stack.Size()) << "リストから要素が削除できていない";
 			}
 
@@ -241,18 +251,22 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(StackPopTest, TestMultiPopWhenMultiElem) {
 
-				Stack<UserData> stack;
+				Stack<int> stack;
 
-				ASSERT_TRUE(stack.Push(UserData(1, 10.0f))) << "初期要素の追加に失敗";
-				ASSERT_TRUE(stack.Push(UserData(2, 20.0f))) << "初期要素の追加に失敗";
+				// -- 初期要素のプッシュ
+				ASSERT_TRUE(stack.Push(1)) << "初期要素の追加に失敗";
+				ASSERT_TRUE(stack.Push(2)) << "初期要素の追加に失敗";
 
-				UserData tUserData;
-				ASSERT_TRUE(stack.Pop(tUserData)) << "要素のポップに失敗";
-				EXPECT_EQ(UserData(2, 20.0f), tUserData) << "ポップされた要素が、想定しているものと異なる";
-				ASSERT_TRUE(stack.Pop(tUserData)) << "要素のポップに失敗";
-				EXPECT_EQ(UserData(1, 10.0f), tUserData) << "ポップされた要素が、想定しているものと異なる";
+				// -- 複数要素がある状態での連続ポップテスト(2回)
+				int tValueA;
+				ASSERT_TRUE(stack.Pop(tValueA)) << "複数要素がある状態でのポップに失敗";
+				int tValueB;
+				ASSERT_TRUE(stack.Pop(tValueB)) << "複数要素がある状態でのポップに失敗";
 
-				EXPECT_EQ(0, stack.Size()) << "リストから要素が削除できていない";
+				// -- 確認テスト(末尾から順に取得できている&サイズが正常に変動している)
+				EXPECT_EQ(2, tValueA) << "末尾から順にデータを取得できていない";
+				EXPECT_EQ(1, tValueB) << "末尾から順にデータを取得できていない";
+				EXPECT_EQ(0, stack.Size()) << "リストから要素を削除できていない";
 			}
 
 		}
@@ -269,6 +283,10 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumWhenEmpty) {
 
+				Queue<int> queue;
+
+				// サイズ取得テスト
+				EXPECT_EQ(0, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -280,6 +298,13 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterPush) {
 
+				Queue<int> queue;
+
+				// 初期要素のプッシュ
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+
+				// サイズ取得テスト
+				EXPECT_EQ(1, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -291,6 +316,14 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterPop) {
 
+				Queue<int> queue;
+
+				// -- 格納要素のポップ(失敗想定)
+				int tValue;
+				ASSERT_FALSE(queue.Pop(tValue)) << "失敗するはずのポップに成功";
+
+				// サイズ取得テスト
+				EXPECT_EQ(0, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -302,6 +335,15 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterPushFailed) {
 
+#if 0		// 要素のプッシュに失敗する条件が、「メモリ確保の失敗」しかないためスキップ
+				Queue<int> queue;
+
+				// 要素のプッシュ(失敗想定)
+				ASSERT_FALSE(queue.Push(1)) << "失敗するはずのプッシュに成功";
+
+				// サイズ取得テスト
+				EXPECT_EQ(0, queue.Size()) << "想定しているサイズと異なる";
+#endif
 			}
 
 			/**********************************************************************************//**
@@ -313,6 +355,14 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterTwoPush) {
 
+				Queue<int> queue;
+
+				// -- 初期要素のプッシュ(2回)
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+				ASSERT_TRUE(queue.Push(2)) << "初期要素のプッシュに失敗";
+
+				// サイズ取得テスト
+				EXPECT_EQ(2, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -324,6 +374,18 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterTwoPushAndOnePop) {
 
+				Queue<int> queue;
+
+				// -- 初期要素のプッシュ(2回)
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+				ASSERT_TRUE(queue.Push(2)) << "初期要素のプッシュに失敗";
+
+				// -- 格納要素のポップ(1回)
+				int tValue;
+				ASSERT_TRUE(queue.Pop(tValue)) << "格納要素のポップに失敗";
+
+				// サイズ取得テスト
+				EXPECT_EQ(1, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -335,6 +397,14 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueueGetDataNumTest, TestGetDataNumAfterPopEmpty) {
 
+				Queue<int> queue;
+
+				// -- 格納要素のポップ(失敗想定)
+				int tValue;
+				ASSERT_FALSE(queue.Pop(tValue)) << "失敗するはずのポップに成功";
+
+				// サイズ取得テスト
+				EXPECT_EQ(0, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 		}
@@ -351,17 +421,40 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueuePushTest, TestPushWhenEmpty) {
 
+				Queue<int> queue;
+
+				// リストが空の状態でのプッシュテスト
+				ASSERT_TRUE(queue.Push(1)) << "リストが空の状態でのプッシュに失敗";
+
+				// 確認テスト(要素数が正常に変動しているか)
+				EXPECT_EQ(1, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
 				@brief		リストに複数の要素がある場合の実行テスト
 				@details	ID:キュー-9\n
 							データのプッシュ機能のテストです。\n
-							リスト複数の要素がある場合の挙動を確認しています。\n
+							リストに複数の要素がある場合の挙動を確認しています。\n
 							戻り値がTRUEかつ、リストの末尾に要素が追加されれば成功です。\n
 			*//***********************************************************************************/
 			TEST(QueuePushTest, TestPushWhenMultiElem) {
 
+				Queue<int> queue;
+
+				// -- 初期要素のプッシュ(2回)
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+				ASSERT_TRUE(queue.Push(2)) << "初期要素のプッシュに失敗";
+
+				// 複数要素がある状態でのプッシュテスト
+				ASSERT_TRUE(queue.Push(3)) << "複数要素がある状態でのプッシュに失敗";
+
+				// -- 確認テスト(末尾に追加されている&サイズが正常に変動している)
+				EXPECT_EQ(3, queue.Size()) << "想定しているサイズと異なる";
+				int tValue;
+				ASSERT_TRUE(queue.Pop(tValue)) << "格納要素のポップに失敗";
+				ASSERT_TRUE(queue.Pop(tValue)) << "格納要素のポップに失敗";
+				ASSERT_TRUE(queue.Pop(tValue)) << "格納要素のポップに失敗";
+				EXPECT_EQ(3, tValue) << "末尾にデータを正常に追加できていない";
 			}
 
 		}
@@ -378,6 +471,11 @@ namespace ex01_DataStructure
 			*//***********************************************************************************/
 			TEST(QueuePopTest, TestPopWhenEmpty) {
 
+				Queue<int> queue;
+
+				// -- リストが空の状態でのポップテスト(失敗想定)
+				int tValue;
+				ASSERT_FALSE(queue.Pop(tValue)) << "失敗するはずのポップに成功";
 			}
 
 			/**********************************************************************************//**
@@ -385,10 +483,23 @@ namespace ex01_DataStructure
 				@details	ID:キュー-12\n
 							データのポップ機能のテストです。\n
 							リストに複数の要素がある場合の挙動を確認しています。\n
-							戻り値がTRUEかつ、末尾要素が引数で渡され、要素が削除されていれば成功です。\n
+							戻り値がTRUEかつ、先頭要素が引数で渡され、要素が削除されていれば成功です。\n
 			*//***********************************************************************************/
 			TEST(QueuePopTest, TestPopWhenMultiElem) {
 
+				Queue<int> queue;
+
+				// -- 初期要素のプッシュ(2回)
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+				ASSERT_TRUE(queue.Push(2)) << "初期要素のプッシュに失敗";
+
+				// -- リストに複数要素がある状態でのポップテスト
+				int tValue;
+				ASSERT_TRUE(queue.Pop(tValue)) << "要素が複数ある状態でのポップに失敗";
+
+				// 確認テスト(初期要素の先頭のデータと同一&サイズが正常に変動している)
+				EXPECT_EQ(1, tValue) << "先頭のデータを正常に取得できていない";
+				EXPECT_EQ(1, queue.Size()) << "想定しているサイズと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -396,10 +507,26 @@ namespace ex01_DataStructure
 				@details	ID:キュー-13\n
 							データのポップ機能のテストです。\n
 							リストに複数の要素がある場合に、複数回ポップした際の挙動を確認しています。\n
-							戻り値がTRUEかつ、末尾要素から順に引数で渡されていれば成功です。\n
+							戻り値がTRUEかつ、先頭要素から順に引数で渡されていれば成功です。\n
 			*//***********************************************************************************/
 			TEST(QueuePopTest, TestMultiPopWhenMultiElem) {
 
+				Queue<int> queue;
+
+				// -- 初期要素のプッシュ(2回)
+				ASSERT_TRUE(queue.Push(1)) << "初期要素のプッシュに失敗";
+				ASSERT_TRUE(queue.Push(2)) << "初期要素のプッシュに失敗";
+
+				// -- 複数要素がある状態での連続ポップテスト(2回)
+				int tValueA;
+				ASSERT_TRUE(queue.Pop(tValueA)) << "複数要素がある状態でのポップに失敗";
+				int tValueB;
+				ASSERT_TRUE(queue.Pop(tValueB)) << "複数要素がある状態でのポップに失敗";
+
+				// -- 確認テスト(先頭から順に取得できている&サイズが正常に変動している)
+				EXPECT_EQ(1, tValueA) << "先頭から順にデータを取得できていない";
+				EXPECT_EQ(2, tValueB) << "先頭から順にデータを取得できていない";
+				EXPECT_EQ(0, queue.Size()) << "リストから要素を削除できていない";
 			}
 
 		}
