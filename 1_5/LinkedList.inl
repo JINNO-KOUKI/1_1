@@ -596,7 +596,7 @@ inline T LinkedList<T>::Front() const noexcept
 template <typename T>
 inline T LinkedList<T>::Back() const noexcept
 {
-	assert(_EOL._Next != nullptr);
+	assert(_EOL._Prev != nullptr);
 	return _EOL._Prev->_Data;
 }
 
