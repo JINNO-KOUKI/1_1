@@ -7,8 +7,6 @@
 /// @tparam Value		格納したい要素の型
 /// @tparam Func		ハッシュ値を求める関数(ハッシュ関数)
 /// @tparam BucketSize	バケットサイズ(ハッシュ値の最大種類数)
-/// @details			バケットサイズは、ハッシュ関数で求められる値の種類数よりも多く設定してください。\n
-///						バケットサイズを超えた種類のハッシュ関数を用いた場合、各種機能が正常に動作しない可能性があります。
 template <typename Key, typename Value, unsigned int (*Func)(Key), unsigned int BucketSize>
 class ChainHash
 {
@@ -48,8 +46,7 @@ public:
 	/// @return				正常終了 : TRUE  異常終了 : FALSE
 	/// @details			キーを元に、新規要素を追加します。\n
 	///						登録するキーは、このハッシュテーブルの中で一意なものである必要があります。\n
-	///						重複するキーが既に格納されている場合、FALSEで終了します。\n
-	///						ハッシュ値がバケットサイズを超過する場合もFALSEで終了します。
+	///						重複するキーが既に格納されている場合、FALSEで終了します。
 	bool Add(const Key& inKey, const Value& inValue);
 
 	/// @brief				ハッシュテーブルから、要素を削除する
@@ -57,8 +54,7 @@ public:
 	/// @param inKey		削除する要素に割り当てられているキー
 	/// @return				正常終了 : TRUE  異常終了 : FALSE
 	/// @details			指定されたキーに該当する要素を、このテーブルから削除します。\n
-	///						キーに該当する要素が格納されていない場合、FALSEで終了します。\n
-	///						ハッシュ値がバケットサイズを超過する場合もFALSEで終了します。
+	///						キーに該当する要素が格納されていない場合、FALSEで終了します。
 	bool Remove(const Key& inKey);
 
 	/// @brief				ハッシュテーブルから、要素を検索する
@@ -68,8 +64,7 @@ public:
 	/// @param outValue		検索結果要素を格納する変数
 	/// @return				要素が見つかる : TRUE  要素が見つからない or 異常終了 : FALSE
 	/// @details			指定されたキーが割り当てられている要素を、このテーブルから検索します。\n
-	///						見つからなかった場合、FALSEで終了します。\n
-	///						ハッシュ値がバケットサイズを超過する場合もFALSEで終了します。
+	///						見つからなかった場合、FALSEで終了します。
 	bool Find(const Key& inKey, Value& outValue) const;
 
 	/// @brief				ハッシュ値から、該当チェインを取得する
@@ -79,7 +74,7 @@ public:
 	/// @details			与えられたハッシュ値と、一致するキーが格納されているチェインリストを取得します。\n
 	///						該当のチェインが存在しない又は一つも要素が格納されていない場合、FALSEで終了します。\n
 	///						格納先リスト変数に既にデータが格納されている又はリストのコピーが失敗した場合にも、FALSEで終了します。
-	bool GetChainByHash(const unsigned int& inHash, LinkedList<Pair>& outList);
+	bool GetChainByHash(const unsigned int& inHash, LinkedList<Pair>& outList) const;
 
 	/// @brief				格納されている全ての要素を取得する
 	/// @param outList		取得した要素を格納するリスト変数
@@ -87,7 +82,7 @@ public:
 	/// @details			このハッシュテーブルに格納されているすべての要素を取得します。\n
 	///						格納先リスト変数に既に要素が格納されている場合、FALSEで終了します。\n
 	///						リストのコピーに失敗した場合、Assertが発生します。
-	bool GetAllData(LinkedList<Pair>& outList);
+	bool GetAllData(LinkedList<Pair>& outList) const;
 
 	/// @brief				格納されている要素数を取得する
 	/// @return				格納されている要素数

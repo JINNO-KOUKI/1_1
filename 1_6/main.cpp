@@ -6,7 +6,7 @@
 /// @brief		テスト実行に利用するハッシュ関数
 unsigned int Hash(int key)
 {
-	return key % 5;
+	return key % 10;
 }
 
 int main()

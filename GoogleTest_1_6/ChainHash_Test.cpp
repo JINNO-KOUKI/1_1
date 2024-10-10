@@ -18,10 +18,15 @@ namespace ex01_DataStructure
 		{
 			return key % 10;
 		}
+		/// @brief テストに利用する、常に0を返すハッシュ関数
+		unsigned int HashAllZero(int key) { return 0; }
+
 		/// @brief テストに利用するチェインハッシュAのテンプレート型
 		using ChainHashA = ChainHash<int, int, HashA, 5 >;
 		/// @brief テストに利用するチェインハッシュBのテンプレート型
 		using ChainHashB = ChainHash<int, int, HashB, 10 >;
+		/// @brief テストに利用する常に同一ハッシュのみのテンプレート型
+		using ChainHashAllZero = ChainHash<int, int, HashAllZero, 10 >;
 
 		//=================================== クラスの挙動 ===================================
 		namespace ClassBehaviourTest
@@ -236,11 +241,11 @@ namespace ex01_DataStructure
 			TEST(GetDataNumTest, TestSizeWhenChain)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2つ)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				EXPECT_EQ(2, chainHash.Size()) << "想定しているサイズと異なる";
@@ -256,11 +261,11 @@ namespace ex01_DataStructure
 			TEST(GetDataNumTest, TestSizeWhenAfterRemoveOnceChain)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2つ)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 要素の削除
 				ASSERT_TRUE(chainHash.Remove(0)) << "要素の削除に失敗した";
@@ -357,14 +362,14 @@ namespace ex01_DataStructure
 			TEST(AddDataTest, TestAddEqHash)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				// 要素の挿入(同一ハッシュ)
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "同一ハッシュによる、要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "同一ハッシュによる、要素の挿入に失敗した";
 
 				// サイズの確認
 				EXPECT_EQ(2, chainHash.Size()) << "想定しているサイズと異なる";
@@ -539,23 +544,23 @@ namespace ex01_DataStructure
 			TEST(RemoveDataTest, TestRemoveOnceByChain)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2回)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				// 要素の削除
-				ASSERT_TRUE(chainHash.Remove(5)) << "チェインになっている要素の削除に失敗した";
+				ASSERT_TRUE(chainHash.Remove(1)) << "チェインになっている要素の削除に失敗した";
 
 				// サイズの確認
 				EXPECT_EQ(1, chainHash.Size()) << "想定しているサイズと異なる";
 
 				// 格納要素の確認
-				LinkedList<ChainHashA::Pair> list;
+				LinkedList<ChainHashAllZero::Pair> list;
 				ASSERT_TRUE(chainHash.GetAllData(list)) << "格納要素の取得に失敗した";
-				EXPECT_EQ(ChainHashA::Pair(0, 1), *(list.Begin())) << "格納されている要素が、想定しているものと異なる";
+				EXPECT_EQ(ChainHashAllZero::Pair(0, 1), *(list.Begin())) << "格納されている要素が、想定しているものと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -571,11 +576,11 @@ namespace ex01_DataStructure
 			TEST(RemoveDataTest, TestRemoveEqHashFalseKey)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2回)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				// 要素の削除(初期要素と同一ハッシュ&別キー)(失敗想定)
@@ -588,12 +593,12 @@ namespace ex01_DataStructure
 				EXPECT_EQ(1, chainHash.ChainSize()) << "想定しているチェインサイズと異なる";
 
 				// 格納要素の確認
-				LinkedList<ChainHashA::Pair> list;
+				LinkedList<ChainHashAllZero::Pair> list;
 				ASSERT_TRUE(chainHash.GetAllData(list)) << "格納要素の取得に失敗した";
-				LinkedList<ChainHashA::Pair>::Iterator it = list.Begin();
-				EXPECT_EQ(ChainHashA::Pair(5, 2), *it) << "格納されている要素が、想定しているものと異なる";
+				LinkedList<ChainHashAllZero::Pair>::Iterator it = list.Begin();
+				EXPECT_EQ(ChainHashAllZero::Pair(1, 2), *it) << "格納されている要素が、想定しているものと異なる";
 				++it;
-				EXPECT_EQ(ChainHashA::Pair(0, 1), *it) << "格納されている要素が、想定しているものと異なる";
+				EXPECT_EQ(ChainHashAllZero::Pair(0, 1), *it) << "格納されている要素が、想定しているものと異なる";
 			}
 
 			/**********************************************************************************//**
@@ -607,15 +612,15 @@ namespace ex01_DataStructure
 			TEST(RemoveDataTest, TestRemoveAll)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2回)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				// 要素の削除(2回)
-				ASSERT_TRUE(chainHash.Remove(5)) << "チェインになっている要素の削除に失敗した";
+				ASSERT_TRUE(chainHash.Remove(1)) << "チェインになっている要素の削除に失敗した";
 				ASSERT_TRUE(chainHash.Remove(0)) << "チェインになっている要素の削除に失敗した";
 
 				// サイズの確認
@@ -772,11 +777,11 @@ namespace ex01_DataStructure
 			TEST(FindDataTest, TestFindByOnceInChain)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2回)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// -- 確認テスト
 				// 要素の検索
@@ -799,14 +804,14 @@ namespace ex01_DataStructure
 			TEST(FindDataTest, TestFindByOnceInChainWhenRemovedOnceInChain)
 			{
 				// -- 変数宣言
-				ChainHashA chainHash;
+				ChainHashAllZero chainHash;
 
 				// -- 初期要素の挿入(同一ハッシュで2回)
 				ASSERT_TRUE(chainHash.Add(0, 1)) << "初期要素の挿入に失敗した";
-				ASSERT_TRUE(chainHash.Add(5, 2)) << "初期要素の挿入に失敗した";
+				ASSERT_TRUE(chainHash.Add(1, 2)) << "初期要素の挿入に失敗した";
 
 				// 要素の削除(1回)
-				ASSERT_TRUE(chainHash.Remove(5)) << "チェインになっている要素の削除に失敗した";
+				ASSERT_TRUE(chainHash.Remove(1)) << "チェインになっている要素の削除に失敗した";
 
 				// -- 確認テスト
 				// 要素の検索(残っている初期要素)
